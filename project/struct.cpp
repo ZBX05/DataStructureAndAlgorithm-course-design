@@ -136,8 +136,14 @@ public:
     }
     bool append(const T value){
         Link<T>* tmp=new Link<T>(value);
-        tail->next=tmp;
-        tail=tmp;
+        if(tail!=NULL){
+            tail->next=tmp;
+            tail=tmp;
+        }
+        else{
+            head->next=tmp;
+            tail=tmp;
+        }
         return true;
     }
     bool insert(const int p,const T value){
@@ -1076,3 +1082,4 @@ void Kruskal(Graph& G, Edge* MST) {
     }
     return 0;
 }*/
+
