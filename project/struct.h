@@ -665,58 +665,6 @@ public:
     virtual ~HuffmanTree() { DeleteTree(root); }
 };
 
-template <class T>
-class ParTreeNode {
-private:
-    T value;
-    ParTreeNode<T>* parent;
-    int nCount;
-public:
-    ParTreeNode() { parent = NULL; }
-    ParTreeNode(int n) { parent = new ParTreeNode<T>[n]; }
-    virtual ~ParTreeNode() { delete parent; }
-    T getvalue() { return value; }
-    void setValue(const T& val) { value = val; }
-    ParTreeNode<T>* getParent() { return parent; }
-    void setParent(ParTreeNode<T>* par) { parent = par; }
-    int getCount() { return nCount; }
-    void setCount(const int count) { nCount = count; }
-};
-template <class T>
-class ParTree {
-public:
-    ParTreeNode<T>* array;
-    int Size;
-    ParTreeNode<T>* Find(ParTreeNode<T>* node)const {
-        ParTreeNode<T>* pointer = node;
-        while (pointer->getParent() != NULL)
-            pointer = pointer->getParent();
-        return pointer;
-    }
-    ParTree(const int size) {
-        array = new ParTreeNode<T>[size];
-    }
-    virtual ~ParTree() { delete[]array; }
-    void Union(int i, int j) {
-        ParTreeNode<T>* pointeri = Find(&array[i]);
-        ParTreeNode<T>* pointerj = Find(&array[j]);
-        if (pointeri != pointerj) {
-            if (pointeri->getCount() >= pointerj->getCount()) {
-                pointerj->setParent(pointeri);
-                pointeri->setCount(pointeri->getCount() + pointerj->getCount());
-            }
-            else {
-                pointeri->setParent(pointerj);
-                pointerj->setCount(pointeri->getCount() + pointerj->getCount());
-            }
-        }
-    }
-    bool Different(int i, int j) {
-        ParTreeNode<T>* pointeri = Find(&array[i]);
-        ParTreeNode<T>* pointerj = Find(&array[j]);
-        return pointeri != pointerj;
-    }
-};
 #define UNVISITED -2
 #define VISITED -3
 #define INFINITY 9999
@@ -1019,6 +967,7 @@ int minVertex(Graph& G, Dist*& D) {
 
 void Visit(Graph g, int n) { if (n != '#')cout << n; }
 
+/*
 void Kruskal(Graph& G, Edge* MST) {
     ParTree<int> A(G.VerticesNum());
     MinHeap<Edge> H(G.EdgesNum());
@@ -1050,7 +999,7 @@ void Kruskal(Graph& G, Edge* MST) {
         }
     }
 }
-
+*/
 /*int main() {
     int n, m, s;
     int from, to, weight;
@@ -1084,5 +1033,7 @@ void Kruskal(Graph& G, Edge* MST) {
     }
     return 0;
 }*/
+
+
 
 #endif // STRUCT_H

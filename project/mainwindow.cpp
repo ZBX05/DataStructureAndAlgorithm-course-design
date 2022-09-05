@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent):
 {
     ui->setupUi(this);
 
-    resize(600,400);
+
     setFixedSize(600,400);
 
     //单选按钮1
