@@ -1,12 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "struct.h"
+#include "arrlist.h"
+#include "methods.h"
 #include <QWidget>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QLabel>
+#include <QFile>
 #include <QFileDialog>
 #include <QDebug>
+#include <QPainter>
+#include <QRect>
 
 MainWindow::MainWindow(QWidget *parent):
      QMainWindow(parent),
@@ -37,19 +41,31 @@ MainWindow::MainWindow(QWidget *parent):
     //底部状态栏
     QStatusBar* stBar=new QStatusBar();
     setStatusBar(stBar);
-    QLabel* info= new QLabel("提示信息",this);
+    QLabel* info= new QLabel(this);
     stBar->addWidget(info);
 
     //文件打开对话框
-    connect(btn1,&QPushButton::clicked,[=](){
-        QString str=QFileDialog::getOpenFileName(this,"选择载入的文件",QDir::currentPath(),"(*.txt)");
-        qDebug()<<str;
+    connect(rab1,&QRadioButton::clicked,[=](){
+        connect(btn1,&QPushButton::clicked,[=](){
+            if(ArrayList->length()!=0)
+                ArrayList->clear();
+            if(load_arrList(this,ArrayList)){
+                info->setText(QString("载入成功！"));
+                //repaint();
+            }
+            else
+                info->setText(QString("载入的文件不能为空！"));
+        });
     });
+}
 
+void MainWindow::paintEvent(QPaintEvent *){
+    QPainter painter(this);
+    if(ArrayList->length()!=0)
+        ArrayList->draw_arrList(painter);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-

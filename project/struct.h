@@ -1,28 +1,43 @@
 #ifndef STRUCT_H
 #define STRUCT_H
 #include <iostream>
+#include <QRectF>
+#include <QPainter>
+
 using namespace std;
 
 template <class T>
 class arrList {
 private:
+    QRectF* unit;
     T* aList;
     int maxSize;
     int curLen;
     int pos;
 public:
-    arrList(const int size){
+    arrList(const int size,int x,int y){
         maxSize=size;
         aList=new T[size];
+        unit=new QRectF[size];
+        for(int i=0;i<size;i++)
+            unit[i].setRect(x*(i+1),y,20,20);
         curLen=pos=0;
     }
     ~arrList(){
         delete [] aList;
+        delete [] unit;
     }
     void clear(){
+        int x,y;
+        x=unit[0].x();
+        y=unit[0].y();
         delete [] aList;
+        delete [] unit;
         curLen=pos=0;
         aList=new T[maxSize];
+        unit=new QRectF[maxSize];
+        for(int i=0;i<maxSize;i++)
+            unit[i].setRect(x*(i+1),y,20,20);
     }
     int length(){return curLen;}
     bool append(const T value){
@@ -31,14 +46,15 @@ public:
             curLen++;
             return true;
         }
-        else return false;
+        return false;
     }
     bool insert(const int p,const T value){
         if(curLen>=maxSize) return false;
         if(p<0||p>curLen) return false;
         else{
-            for(int i=curLen;i>p;i--)
+            for(int i=curLen;i>p;i--){
                 aList[i]=aList[i-1];
+            }
             aList[p]=value;
             curLen++;
             return true;
@@ -48,8 +64,9 @@ public:
     bool delete_(const int p){
         if(curLen<=0) return false;
         if(p<0||p>curLen-1) return false;
-        for(int i=p;i<curLen-1;i++)
+        for(int i=p;i<curLen-1;i++){
             aList[i]=aList[i+1];
+        }
         curLen--;
         return true;
     }
@@ -74,7 +91,17 @@ public:
         }
         return false;
     }
+    //显示顺序表的图形化形式
+    void draw_arrList(QPainter &p){
+        int i;
+        for(i=0;i<curLen;i++){
+            p.drawRect(unit[i]);
+            p.drawText(unit[i],Qt::AlignCenter,aList[i],nullptr);
+        }
+    }
 };
+
+
 
 template <class T>
 class Link{
