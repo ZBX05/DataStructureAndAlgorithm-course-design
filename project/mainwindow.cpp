@@ -45,8 +45,8 @@ MainWindow::MainWindow(QWidget *parent):
     stBar->addWidget(info);
 
     //文件打开对话框
-    connect(rab1,&QRadioButton::clicked,[=](){
-        connect(btn1,&QPushButton::clicked,[=](){
+    connect(btn1,&QPushButton::clicked,[=](){
+        if(rab1->isChecked()){
             if(ArrayList->length()!=0)
                 ArrayList->clear();
             if(load_arrList(this,ArrayList)){
@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent):
             }
             else
                 info->setText(QString("载入的文件不能为空！"));
-        });
+        }
     });
 }
 

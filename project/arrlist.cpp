@@ -1,4 +1,6 @@
 #include "arrlist.h"
+#include "windows.h"
+
 arrList::arrList(){
     aList=new int[0];
     unit=new QRectF[0];

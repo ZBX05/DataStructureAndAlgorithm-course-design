@@ -15,12 +15,9 @@ bool load_arrList(QWidget* parent,arrList* al){
     content=content.remove('<');
     content=content.remove('>');
     QStringList content_list=content.split(',',Qt::SkipEmptyParts);
-//    int v;
     if(!content_list.isEmpty()){
         for(int i=0;i<content_list.length();i++){
             al->append(content_list[i].toInt(nullptr,10));
-//            al->getValue(i,v);
-//            qDebug()<<al->length();
         }
         return true;
     }
