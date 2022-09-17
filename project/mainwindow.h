@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QWidget>
+#include <QGraphicsScene>
 #include "arrlist.h"
 
 QT_BEGIN_NAMESPACE
@@ -12,9 +13,11 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+private:
+    QGraphicsScene* scene;
+    QGraphicsView* view;
 public:
-    arrList* ArrayList=new arrList(99,20,50);
+    arrList* ArrayList=new arrList(99,1,1);
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void paintEvent(QPaintEvent *);

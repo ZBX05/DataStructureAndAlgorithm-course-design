@@ -1,25 +1,40 @@
 #include "arrlist.h"
-#include "windows.h"
+#include <QTimer>
+#include <QPainter>
+#include <QDebug>
+#include <QGraphicsRectItem>
+#include <QGraphicsScene>
+#include <QtGui>
 
 arrList::arrList(){
     aList=new int[0];
-    unit=new QRectF[0];
+    unit=new QGraphicsRectItem[0];
+    text=new QGraphicsTextItem[0];
     curLen=pos=0;
+    unit[0].setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
+    text[0].setParentItem(&unit[0]);
+    text[0].setPos(unit[0].boundingRect().x(),unit[0].boundingRect().y());
 }
 
 arrList::arrList(const int size,int x,int y)
 {
     maxSize=size;
     aList=new int[size];
-    unit=new QRectF[size];
-    for(int i=0;i<size;i++)
-        unit[i].setRect(x*(i+1),y,20,20);
+    unit=new QGraphicsRectItem[size];
+    text=new QGraphicsTextItem[size];
+    for(int i=0;i<size;i++){
+        unit[i].setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
+        unit[i].setRect(x+i*20,y,20,20);
+        text[i].setParentItem(&unit[i]);
+        text[i].setPos(unit[i].boundingRect().x(),unit[i].boundingRect().y());
+    }
     curLen=pos=0;
 }
 
 arrList::~arrList(){
     delete [] aList;
     delete [] unit;
+    delete [] text;
 }
 
 void arrList::clear(){
@@ -28,18 +43,32 @@ void arrList::clear(){
     y=unit[0].y();
     delete [] aList;
     delete [] unit;
+    delete [] text;
     curLen=pos=0;
     aList=new int[maxSize];
-    unit=new QRectF[maxSize];
-    for(int i=0;i<maxSize;i++)
+    unit=new QGraphicsRectItem[maxSize];
+    text=new QGraphicsTextItem[maxSize];
+    for(int i=0;i<maxSize;i++){
+        unit[i].setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
         unit[i].setRect(x*(i+1),y,20,20);
+        text[i].setParentItem(&unit[i]);
+        text[i].setPos(unit[i].boundingRect().x(),unit[i].boundingRect().y());
+    }
 }
 
-int arrList::length(){return curLen;}
+int arrList::length(){
+    return curLen;
+}
+
+int arrList::getMaxSize(){
+    return maxSize;
+}
 
 bool arrList::append(const int value){
     if(curLen<maxSize){
         aList[curLen]=value;
+        text[curLen].setPlainText(QString::number(aList[curLen],10));
+        text[curLen].setPos(unit[curLen].boundingRect().x(),unit[curLen].boundingRect().y());
         curLen++;
         return true;
     }
@@ -73,6 +102,8 @@ bool arrList::setValue(const int p,const int value){
     if(curLen<=0) return false;
     if(p<0||p>curLen-1) return false;
     aList[p]=value;
+    text[p].setPlainText(QString::number(value,10));
+    //text[p].setPos(unit[p].boundingRect().x(),unit[p].boundingRect().y());
     return true;
 }
 
@@ -95,12 +126,16 @@ bool arrList::getPos(int& p,const int value){
 }
 
 //显示顺序表的图形化形式
-void arrList::draw_arrList(QPainter &p){
-    int i;
+void arrList::draw_arrList(QGraphicsScene* scene){
+    int i=0;
+    QPen pen;
+    pen.setWidth(2);
     if(curLen==0)
         return;
     for(i=0;i<curLen;i++){
-        p.drawRect(unit[i]);
-        p.drawText(unit[i],Qt::AlignCenter,QString::number(aList[i],10),nullptr);
+        unit[i].setPen(pen);
+        scene->addItem(&unit[i]);
     }
 }
+
+
