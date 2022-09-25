@@ -11,7 +11,10 @@ CONFIG += c++17
 SOURCES += \
     arrlist.cpp \
     dialog_arrlist_append.cpp \
+    dialog_arrlist_delete.cpp \
     dialog_arrlist_edit.cpp \
+    dialog_arrlist_insert.cpp \
+    dialog_arrlist_load.cpp \
     link.cpp \
     linkstack.cpp \
     main.cpp \
@@ -20,7 +23,10 @@ SOURCES += \
 HEADERS += \
     arrlist.h \
     dialog_arrlist_append.h \
+    dialog_arrlist_delete.h \
     dialog_arrlist_edit.h \
+    dialog_arrlist_insert.h \
+    dialog_arrlist_load.h \
     link.h \
     linkstack.h \
     mainwindow.h \
@@ -29,7 +35,10 @@ HEADERS += \
 
 FORMS += \
     dialog_arrlist_append.ui \
+    dialog_arrlist_delete.ui \
     dialog_arrlist_edit.ui \
+    dialog_arrlist_insert.ui \
+    dialog_arrlist_load.ui \
     mainwindow.ui
 
 # Default rules for deployment.

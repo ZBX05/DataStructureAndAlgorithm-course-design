@@ -1,20 +1,33 @@
 #ifndef LINK_H
 #define LINK_H
 #include <iostream>
+#include <QObject>
 #include <QRectF>
 #include <QPainter>
 #include <QString>
+#include <QGraphicsRectItem>
+#include <QGraphicsTextItem>
+#include <QGraphicsLineItem>
+#include <QEventLoop>
 
-class Link
+class Link:public QObject
 {
+        Q_OBJECT
+    friend class linkStack;
 private:
     int value;
-    Link* next;
+    Link *next;
+    QGraphicsRectItem *unit1,*unit2,*unit3;
+    QGraphicsTextItem *text1,*text2;
+    QGraphicsLineItem *line;
 public:
-    Link(const int info,Link* next=NULL);
-    Link(Link* next=NULL);
-    Link* getNext();
+    explicit Link(QObject *parent);
+    Link(const int info,const int pos,Link *next=NULL);
+    Link(Link *next=NULL);
+    ~Link();
+    Link *getNext();
     int getValue();
+    void setValue(int value);
 };
 
 #endif // LINK_H
