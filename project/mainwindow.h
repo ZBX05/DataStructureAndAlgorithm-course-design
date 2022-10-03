@@ -6,6 +6,7 @@
 #include <QGraphicsScene>
 #include "arrlist.h"
 #include "linkstack.h"
+#include "widget_linkstack_matching.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,6 +18,7 @@ class MainWindow : public QMainWindow
 private:
     QGraphicsScene *scene;
     QGraphicsView *view;
+    Widget_linkstack_matching *w=new Widget_linkstack_matching;
 public:
     arrList *ArrayList=new arrList(0);
     linkStack *LinkStack=new linkStack(0);

@@ -17,6 +17,7 @@ public:
     linkStack(int size);
     ~linkStack();
     int getSize();
+    int length();
     void clear();
     bool push(const int value);
     bool pop(int& item);
@@ -25,7 +26,9 @@ public:
     bool setValue(const int p,const int value);
     bool insert(const int p,const int value);
     bool delete_(const int p);
-    void draw_linkStack(QGraphicsScene* scene);
+    bool brackets_matching(QGraphicsScene *scene,QString *string);
+    bool expression_calculate(QGraphicsScene *scene,QString *string,int &value);
+    void draw_linkStack(QGraphicsScene *scene);
 };
 
 #endif // LINKSTACK_H

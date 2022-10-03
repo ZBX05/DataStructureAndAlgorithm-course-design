@@ -20,6 +20,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QLayout>
+#include <QCheckBox>
 
 MainWindow::MainWindow(QWidget *parent):
      QMainWindow(parent),
@@ -40,61 +41,75 @@ MainWindow::MainWindow(QWidget *parent):
 //    QPen pen;
 //    pen.setWidth(2);
 //    pen.setColor(QColorConstants::Black);
-//    QGraphicsRectItem *rect=new QGraphicsRectItem(-200,-200,20,20,nullptr);
-//    rect->setPen(pen);
-//    scene->addItem(rect);
-//    view->repaint();
+//    QGraphicsRectItem *rect1=new QGraphicsRectItem(-200,-200,20,20,nullptr);
+//    rect1->setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
+//    rect1->setPen(pen);
+//    scene->addItem(rect1);
+//    QGraphicsRectItem *rect2=new QGraphicsRectItem(-160,-200,20,20,nullptr);
+//    rect2->setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
+//    rect2->setPen(pen);
+//    scene->addItem(rect2);
+//    QGraphicsLineItem *line=new QGraphicsLineItem(nullptr);
+
+
+    //复选框1
+    QCheckBox *chb=new QCheckBox("轻量模式",this);
+    chb->setChecked(true);
+    chb->move(1100,25);
 
     //单选按钮1
-    QRadioButton* rab1=new QRadioButton("顺序表",this);
+    QRadioButton *rab1=new QRadioButton("顺序表",this);
     rab1->setChecked(true);
-    rab1->move(1100,25);
+    rab1->move(1100,45);
 
     //单选按钮2
-    QRadioButton* rab2=new QRadioButton("链式栈",this);
-    rab2->move(1100,45);
+    QRadioButton *rab2=new QRadioButton("链式栈",this);
+    rab2->move(1100,65);
 
     //单选按钮3
-    QRadioButton* rab3=new QRadioButton("图",this);
-    rab3->move(1100,65);
+    QRadioButton *rab3=new QRadioButton("图",this);
+    rab3->move(1100,85);
 
     //按钮1
-    QPushButton* btn1=new QPushButton("载入",this);
-    btn1->move(1080,105);
+    QPushButton *btn1=new QPushButton("载入",this);
+    btn1->move(1080,125);
 
     //按钮2
-    QPushButton* btn2=new QPushButton("清除",this);
-    btn2->move(1080,145);
+    QPushButton *btn2=new QPushButton("清除",this);
+    btn2->move(1080,165);
 
 
     //顶部菜单栏
-    QMenuBar* meb=new QMenuBar(this);
+    QMenuBar *meb=new QMenuBar(this);
     setMenuBar(meb);
     //菜单
-    QMenu* meu1=new QMenu("操作");
+    QMenu *meu1=new QMenu("操作");
     meb->addMenu(meu1);
-    QMenu* arrlist_meu=new QMenu("顺序表");
+    QMenu *arrlist_meu=new QMenu("顺序表");
     meu1->addMenu(arrlist_meu);
-    QAction* edit_data=arrlist_meu->addAction("修改数据");
-    QAction* append=arrlist_meu->addAction("添加元素");
-    QAction* insert=arrlist_meu->addAction("🎇插入");
-    QAction* delete_=arrlist_meu->addAction("🎇删除");
-    QAction* sort=arrlist_meu->addAction("🎇冒泡排序");
-    QMenu* linkstack_meu=new QMenu("链式栈");
+    QAction *edit_al=arrlist_meu->addAction("修改数据");
+    QAction *append=arrlist_meu->addAction("添加元素");
+    QAction *insert=arrlist_meu->addAction("🎇插入");
+    QAction *delete_=arrlist_meu->addAction("🎇删除");
+    QAction *sort=arrlist_meu->addAction("🎇冒泡排序");
+    QMenu *linkstack_meu=new QMenu("链式栈");
     meu1->addMenu(linkstack_meu);
-    QAction* push=linkstack_meu->addAction("入栈");
-    QAction* pop=linkstack_meu->addAction("出栈");
+    QAction *push=linkstack_meu->addAction("入栈");
+    QAction *pop=linkstack_meu->addAction("出栈");
+    QAction *edit_ls=linkstack_meu->addAction("修改数据");
+    QAction *matching=linkstack_meu->addAction("🎇括号匹配");
+    QAction *calculate=linkstack_meu->addAction("🎇表达式求值");
 
     //底部状态栏
-    QStatusBar* stBar=new QStatusBar();
+    QStatusBar *stBar=new QStatusBar();
     setStatusBar(stBar);
-    QLabel* info= new QLabel(this);
+    QLabel *info= new QLabel(this);
     stBar->addWidget(info);
 
     //////////////////////////////////////////
     //顺序表菜单
     //修改数据
-    connect(edit_data,&QAction::triggered,[=](){
+    connect(edit_al,&QAction::triggered,[=](){
         if(rab1->isChecked()){
             if(ArrayList->length()!=0){
                 int code=edit_arrList(this,ArrayList);
@@ -103,11 +118,8 @@ MainWindow::MainWindow(QWidget *parent):
                 else if(code==0)
                     info->setText("修改数据失败！");
             }
-            else{
+            else
                 info->setText("修改数据要求顺序表不能为空！");
-            }
-            scene->update();
-            view->update();
         }
         else
             info->setText("选择的数据类型不正确！");
@@ -116,7 +128,7 @@ MainWindow::MainWindow(QWidget *parent):
     //添加元素
     connect(append,&QAction::triggered,[=](){
         if(rab1->isChecked()){
-            if(ArrayList->length()!=0){
+//            if(ArrayList->length()!=0){
                 if(ArrayList->length()<ArrayList->getMaxSize()){
                     int code=append_arrList(this,ArrayList);
                     if(code==1)
@@ -124,15 +136,12 @@ MainWindow::MainWindow(QWidget *parent):
                     else if(code==0)
                         info->setText("添加元素失败！");
                 }
-                else{
+                else
                     info->setText("顺序表已满！");
-                }
-            }
-            else
-                info->setText("此处的添加操作要求顺序表不能为空！");
+//            }
+//            else
+//                info->setText("此处的添加操作要求顺序表不能为空！");
             ArrayList->draw_arrList(scene);
-            scene->update();
-            view->update();
         }
         else
             info->setText("选择的数据类型不正确！");
@@ -149,9 +158,8 @@ MainWindow::MainWindow(QWidget *parent):
                     else if(code==0)
                         info->setText("插入元素失败！");
                 }
-                else{
+                else
                     info->setText("顺序表已满！");
-                }
             }
             else
                 info->setText("插入操作要求顺序表不能为空！");
@@ -191,6 +199,108 @@ MainWindow::MainWindow(QWidget *parent):
             info->setText("选择的数据类型不正确！");
     });
     //////////////////////////////////////////
+    //链式栈菜单
+    //入栈
+    connect(push,&QAction::triggered,[=](){
+        if(rab2->isChecked()){
+            int code=push_linkStack(this,LinkStack);
+            if(code==1){
+                LinkStack->draw_linkStack(scene);
+                info->setText("元素入栈成功！");
+            }
+            else if(code==0)
+                info->setText("元素入栈失败！");
+        }
+        else
+            info->setText("选择的数据类型不正确！");
+    });
+
+    //出栈
+    connect(pop,&QAction::triggered,[=](){
+       if(rab2->isChecked()){
+           int item;
+           if(LinkStack->pop(item))
+               info->setText("元素出栈成功！");
+           else
+               info->setText("栈已经为空栈！");
+       }
+    });
+
+    //修改数据
+    connect(edit_ls,&QAction::triggered,[=](){
+        if(rab2->isChecked()){
+            if(LinkStack->length()!=0||LinkStack->getSize()!=0){
+                int code=edit_linkStack(this,LinkStack);
+                if(code==1)
+                    info->setText("修改数据成功!");
+                else if(code==0)
+                    info->setText("修改数据失败！");
+            }
+            else
+                info->setText("修改数据要求顺序表不能为空！");
+        }
+        else
+            info->setText("选择的数据类型不正确！");
+    });
+
+    //括号匹配
+    connect(matching,&QAction::triggered,[=](){
+        if(rab2->isChecked()){
+            w->setWindowModality(Qt::WindowModal);
+            w->setWindowFlag(Qt::Widget);
+            w->show();
+back1:
+            int value;
+            int code=w->run(1,value);
+            if(code==1){
+                info->setText("括号匹配成功！");
+                w->close();
+            }
+            else if(code==0){
+                info->setText("括号匹配失败！该字符串没有规范地使用括号！");
+                w->close();
+            }
+            else if(code==2){
+                info->setText("字符串长度不正确！");
+                goto back1;
+            }
+            else if(code==3)
+                w->close();
+        }
+        else
+            info->setText("选择的数据类型不正确！");
+    });
+
+    //表达式求值
+    connect(calculate,&QAction::triggered,[=](){
+        if(rab2->isChecked()){
+            w->setWindowModality(Qt::WindowModal);
+            w->setWindowFlag(Qt::Widget);
+            w->show();
+back2:
+            int value;
+            int code=w->run(2,value);
+            if(code==1){
+                QString content="运算成功！结果为：";
+                content.append(QString::number(value,10));
+                info->setText(content);
+                w->close();
+            }
+            else if(code==0){
+                info->setText("运算失败！发生错误！");
+                w->close();
+            }
+            else if(code==2){
+                info->setText("表达式长度不正确！");
+                goto back2;
+            }
+            else if(code==3)
+                w->close();
+        }
+        else
+            info->setText("选择的数据类型不正确！");
+    });
+    //////////////////////////////////////////
     //清除按钮
     connect(btn2,&QPushButton::clicked,[=](){
         if(rab1->isChecked()){
@@ -213,24 +323,31 @@ MainWindow::MainWindow(QWidget *parent):
 
     //载入按钮
     connect(btn1,&QPushButton::clicked,[=](){
+        chb->setDisabled(true);
         if(rab1->isChecked()){
             delete ArrayList;
             Dialog_arrlist_load *dialog=new Dialog_arrlist_load(this);
             int ret=dialog->exec();
             if(ret==QDialog::Accepted){
                 int size=dialog->getValue();
-                ArrayList=new arrList(size);
-                int code=load_arrList(this,ArrayList);
-                if(code==1){
-                    ArrayList->draw_arrList(scene);
-                    info->setText("载入成功！");
+                if(chb->isChecked()&&size>10){
+                    info->setText("轻量模式下最大长度必须在10以内！");
+                    ArrayList=new arrList(0);
                 }
-                else if(code==0)
-                    info->setText("载入的文件不能为空！");
-                else if(code==-2)
-                    info->setText("载入的文件长度超长！");
-                else if(code==-1)
-                    info->setText("载入失败！");
+                else{
+                    ArrayList=new arrList(size);
+                    int code=load_arrList(this,ArrayList);
+                    if(code==1){
+                        ArrayList->draw_arrList(scene);
+                        info->setText("载入成功！");
+                    }
+                    else if(code==0)
+                        info->setText("载入的文件不能为空！");
+                    else if(code==-2)
+                        info->setText("载入的文件长度超长！");
+                    else if(code==-1)
+                        info->setText("载入失败！");
+                }
             }
             else
                 ArrayList=new arrList(0);
@@ -241,18 +358,24 @@ MainWindow::MainWindow(QWidget *parent):
             int ret=dialog->exec();
             if(ret==QDialog::Accepted){
                 int size=dialog->getValue();
-                LinkStack=new linkStack(size);
-                int code=load_linkStack(this,LinkStack);
-                if(code==1){
-                    LinkStack->draw_linkStack(scene);
-                    info->setText("载入成功！");
+                if(chb->isChecked()&&size>10){
+                    info->setText("轻量模式下最大长度必须在10以内！");
+                    LinkStack=new linkStack(0);
                 }
-                else if(code==0)
-                    info->setText("载入的文件不能为空！");
-                else if(code==-2)
-                    info->setText("载入的文件长度超长！");
-                else if(code==-1)
-                    info->setText("载入失败！");
+                else{
+                    LinkStack=new linkStack(size);
+                    int code=load_linkStack(this,LinkStack);
+                    if(code==1){
+                        LinkStack->draw_linkStack(scene);
+                        info->setText("载入成功！");
+                    }
+                    else if(code==0)
+                        info->setText("载入的文件不能为空！");
+                    else if(code==-2)
+                        info->setText("载入的文件长度超长！");
+                    else if(code==-1)
+                        info->setText("载入失败！");
+                }
             }
             else
                 LinkStack=new linkStack(0);
@@ -263,6 +386,7 @@ MainWindow::MainWindow(QWidget *parent):
 
 MainWindow::~MainWindow()
 {
+    delete w;
     delete ArrayList;
     delete LinkStack;
     delete ui;

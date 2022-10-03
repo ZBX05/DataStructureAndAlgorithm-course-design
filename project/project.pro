@@ -15,10 +15,13 @@ SOURCES += \
     dialog_arrlist_edit.cpp \
     dialog_arrlist_insert.cpp \
     dialog_arrlist_load.cpp \
+    dialog_input.cpp \
+    dialog_linkstack_push.cpp \
     link.cpp \
     linkstack.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    widget_linkstack_matching.cpp
 
 HEADERS += \
     arrlist.h \
@@ -27,11 +30,14 @@ HEADERS += \
     dialog_arrlist_edit.h \
     dialog_arrlist_insert.h \
     dialog_arrlist_load.h \
+    dialog_input.h \
+    dialog_linkstack_push.h \
     link.h \
     linkstack.h \
     mainwindow.h \
     methods.h \
-    struct.h
+    struct.h \
+    widget_linkstack_matching.h
 
 FORMS += \
     dialog_arrlist_append.ui \
@@ -39,7 +45,10 @@ FORMS += \
     dialog_arrlist_edit.ui \
     dialog_arrlist_insert.ui \
     dialog_arrlist_load.ui \
-    mainwindow.ui
+    dialog_input.ui \
+    dialog_linkstack_push.ui \
+    mainwindow.ui \
+    widget_linkstack_matching.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

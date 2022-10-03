@@ -9,10 +9,13 @@
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QThread>
 #include "dialog_arrlist_edit.h"
 #include "dialog_arrlist_append.h"
 #include "dialog_arrlist_insert.h"
 #include "dialog_arrlist_delete.h"
+#include "dialog_linkstack_push.h"
+#include "widget_linkstack_matching.h"
 
 //加载顺序表
 int load_arrList(QWidget *parent,arrList *al){
@@ -120,5 +123,40 @@ int load_linkStack(QWidget *parent,linkStack *ls){
     }
     return -1;
 }
+
+//链式栈入栈
+int push_linkStack(QWidget *parent,linkStack *ls){
+    Dialog_linkstack_push *dialog=new Dialog_linkstack_push(parent);
+    int ret=dialog->exec();
+    if(ret==QDialog::Accepted){
+        if(ls->push(dialog->getValue()))
+            return 1;
+        else
+            return 0;
+    }
+    return 2;
+    delete dialog;
+}
+
+//链式栈修改数据
+int edit_linkStack(QWidget *parent,linkStack *ls){
+    Dialog_arrlist_edit *dialog=new Dialog_arrlist_edit(parent);//复用顺序表修改数据对话框
+    dialog->setBox(ls->length());
+    int ret=dialog->exec();
+    if(ret==QDialog::Accepted){
+        if(ls->setValue(dialog->getPos(),dialog->getValue()))
+            return 1;
+        else return 0;
+    }
+    else return 2;
+    delete dialog;
+}
+
+//void matching_linkStack(QWidget *parent){
+//    Widget_linkstack_matching *w=new Widget_linkstack_matching();
+//    QThread *thread=new QThread(parent);
+//    w->moveToThread(thread);
+//    thread->start();
+//}
 
 #endif // METHODS_H

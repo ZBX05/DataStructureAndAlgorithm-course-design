@@ -8,6 +8,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
 #include <QGraphicsLineItem>
+#include <QGraphicsPolygonItem>
 #include <QEventLoop>
 
 class Link:public QObject
@@ -19,7 +20,9 @@ private:
     Link *next;
     QGraphicsRectItem *unit1,*unit2,*unit3;
     QGraphicsTextItem *text1,*text2;
+    QGraphicsEllipseItem *point;
     QGraphicsLineItem *line;
+    QGraphicsPolygonItem *triangle;
 public:
     explicit Link(QObject *parent);
     Link(const int info,const int pos,Link *next=NULL);

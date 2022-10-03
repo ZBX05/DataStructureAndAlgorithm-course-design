@@ -16,3 +16,4 @@ Dialog_arrlist_load::~Dialog_arrlist_load()
 int Dialog_arrlist_load::getValue(){
     return ui->line_value->text().toInt(nullptr,10);
 }
+

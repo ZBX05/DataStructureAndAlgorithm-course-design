@@ -27,7 +27,7 @@ arrList::arrList(const int size)
     text=new QGraphicsTextItem[size];
     for(int i=0;i<size;i++){
         //unit[i].setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
-        unit[i].setRect(-200+i*20,-200,20,20);
+        unit[i].setRect(-200+i*25,-200,25,25);
         text[i].setParentItem(&unit[i]);
         text[i].setPos(unit[i].boundingRect().x(),unit[i].boundingRect().y());
     }
@@ -53,7 +53,7 @@ void arrList::clear(){
     text=new QGraphicsTextItem[maxSize];
     for(int i=0;i<maxSize;i++){
         //unit[i].setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
-        unit[i].setRect(x+i*20,y,20,20);
+        unit[i].setRect(x+i*25,y,25,25);
         text[i].setParentItem(&unit[i]);
         text[i].setPos(unit[i].boundingRect().x(),unit[i].boundingRect().y());
     }
@@ -182,6 +182,13 @@ bool arrList::getPos(int& p,const int value){
 void arrList::bubbleSort(QLabel* info){
     bool NoSwap;
     int i,j,tmp;
+    QPen pen,pen1,pen2;
+    pen.setWidth(2);
+    pen.setColor(Qt::black);
+    pen1.setWidth(2);
+    pen1.setColor(Qt::yellow);
+    pen2.setWidth(2);
+    pen2.setColor(Qt::green);
     QString temp;
     QTimer* timer=new QTimer(nullptr);
     timer->setSingleShot(true);
@@ -190,7 +197,11 @@ void arrList::bubbleSort(QLabel* info){
     info->setText("正在冒泡排序......");
     for(i=0;i<curLen;i++){
         NoSwap=true;
-        for(j=curLen-1;j>i;j--)
+        unit[i].setPen(pen1);
+        for(j=curLen-1;j>i;j--){
+            unit[j].setPen(pen2);
+            timer->start(500);
+            loop->exec();
             if(aList[j]<aList[j-1]){
                 tmp=aList[j];
                 aList[j]=aList[j-1];
@@ -202,9 +213,19 @@ void arrList::bubbleSort(QLabel* info){
                 text[j].setPlainText(text[j-1].toPlainText());
                 text[j-1].setPlainText(temp);
             }
-        if(NoSwap)
+            unit[j].setPen(pen);
+        }
+        if(NoSwap){
+            unit[i].setPen(pen);
+            delete timer;
+            delete loop;
             return;
+        }
+        unit[i].setPen(pen);
     }
+    unit[curLen-1].setPen(pen);
+    delete timer;
+    delete loop;
 }
 
 //显示顺序表的图形化形式
