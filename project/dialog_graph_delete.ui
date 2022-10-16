@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog_arrlist_load</class>
- <widget class="QDialog" name="Dialog_arrlist_load">
+ <class>Dialog_graph_delete</class>
+ <widget class="QDialog" name="Dialog_graph_delete">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,29 +11,47 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>设置最大长度或最大节点个数</string>
+   <string>删除边</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>最大长度（最大节点个数）：</string>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>起点</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="pos_box1"/>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QLineEdit" name="line_value"/>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>终点</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="pos_box2"/>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QPushButton" name="btn1">
        <property name="text">
-        <string>下一步</string>
+        <string>确定</string>
        </property>
       </widget>
      </item>
@@ -53,7 +71,7 @@
   <connection>
    <sender>btn1</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog_arrlist_load</receiver>
+   <receiver>Dialog_graph_delete</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -68,8 +86,8 @@
   </connection>
   <connection>
    <sender>btn2</sender>
-   <signal>clicked()</signal>
-   <receiver>Dialog_arrlist_load</receiver>
+   <signal>clicked(bool)</signal>
+   <receiver>Dialog_graph_delete</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -7,6 +7,7 @@
 #include "arrlist.h"
 #include "linkstack.h"
 #include "widget_linkstack_matching.h"
+#include "graph.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,6 +23,7 @@ private:
 public:
     arrList *ArrayList=new arrList(0);
     linkStack *LinkStack=new linkStack(0);
+    Graph *graph=new Graph(0);
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 private:

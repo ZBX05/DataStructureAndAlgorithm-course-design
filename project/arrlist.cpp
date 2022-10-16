@@ -41,9 +41,6 @@ arrList::~arrList(){
 }
 
 void arrList::clear(){
-    int x,y;
-    x=unit[0].x();
-    y=unit[0].y();
     delete [] text;
     delete [] unit;
     delete [] aList;
@@ -53,7 +50,7 @@ void arrList::clear(){
     text=new QGraphicsTextItem[maxSize];
     for(int i=0;i<maxSize;i++){
         //unit[i].setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
-        unit[i].setRect(x+i*25,y,25,25);
+        unit[i].setRect(-200+i*25,-200,25,25);
         text[i].setParentItem(&unit[i]);
         text[i].setPos(unit[i].boundingRect().x(),unit[i].boundingRect().y());
     }

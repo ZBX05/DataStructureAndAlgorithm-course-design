@@ -2,6 +2,7 @@
 #define METHODS_H
 #include "arrlist.h"
 #include "linkstack.h"
+#include "graph.h"
 #include <QWidget>
 #include <QLabel>
 #include <QFile>
@@ -10,12 +11,15 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QThread>
+#include <QRegularExpression>
 #include "dialog_arrlist_edit.h"
 #include "dialog_arrlist_append.h"
 #include "dialog_arrlist_insert.h"
 #include "dialog_arrlist_delete.h"
 #include "dialog_linkstack_push.h"
-#include "widget_linkstack_matching.h"
+#include "dialog_graph_editedge.h"
+#include "dialog_graph_delete.h"
+
 
 //加载顺序表
 int load_arrList(QWidget *parent,arrList *al){
@@ -152,11 +156,117 @@ int edit_linkStack(QWidget *parent,linkStack *ls){
     delete dialog;
 }
 
-//void matching_linkStack(QWidget *parent){
-//    Widget_linkstack_matching *w=new Widget_linkstack_matching();
-//    QThread *thread=new QThread(parent);
-//    w->moveToThread(thread);
-//    thread->start();
-//}
+//加载图
+int load_Graph(QWidget *parent,Graph *gh,int size){
+    QString path=QFileDialog::getOpenFileName(parent,"选择载入的文件",QDir::currentPath(),"(*.txt)");
+    QFile file(path);
+    file.open(QIODevice::ReadOnly);
+    QByteArray array=file.readAll();
+    QString content=QString(array);
+    if(content.isEmpty())
+        return 0;
+    content.remove('{');
+    content.remove('}');
+    content.remove('<');
+    content.remove('>');
+    QRegularExpression Separator = QRegularExpression("\r\n|,");
+    QStringList content_list=content.split(Separator,Qt::SkipEmptyParts);
+    int start_size=content_list[0].toInt(nullptr,10);
+    if(start_size>size)
+        return -2;
+    content_list.removeFirst();
+    if(!content_list.isEmpty()){
+        gh->setLen(start_size);
+        for(int i=0;i<content_list.length();i+=3){
+            if(content_list[i].toInt(nullptr,10)>=start_size||content_list[i].toInt(nullptr,10)>=start_size)
+                return -2;
+            gh->setEdge(content_list[i].toInt(nullptr,10),content_list[i+1].toInt(nullptr,10),content_list[i+2].toInt(nullptr,10));
+        }
+        return 1;
+    }
+    else{
+        if(path!="")
+            return 0;
+        if(path=="")
+            return 2;//取消
+    }
+    return -1;
+}
+
+//删除节点
+bool delVertex_Graph(QWidget *parent,QGraphicsScene *scene,Graph *gh){
+    Dialog_arrlist_delete *dialog=new Dialog_arrlist_delete(parent);
+    dialog->setBox(gh->get_vertex(),gh->getLen());
+    int ret=dialog->exec();
+    if(ret==QDialog::Accepted){
+        char *c=gh->get_vertex();
+        QString str=dialog->getVertexPos();
+        for(int i=0;i<gh->getLen();i++){
+            if(str[0]==(QChar)c[i]){
+                gh->delVertex(i,scene);
+                return true;
+                break;
+            }
+        }
+    }
+    return false;
+    delete dialog;
+}
+
+//添加/修改边
+int editEdge_Graph(QWidget *parent,Graph *gh){
+    Dialog_graph_editedge *dialog=new Dialog_graph_editedge(parent);
+    dialog->setBox(gh->get_vertex(),gh->getLen());
+    int ret=dialog->exec();
+    if(ret==QDialog::Accepted){
+        QString from,to;
+        int weight,p1,p2;
+        char *c=gh->get_vertex();
+        dialog->getPos(from,to);
+        if(from==to)
+            return 0;
+        for(int i=0;i<gh->getLen();i++){
+            if(c[i]==from)
+                p1=i;
+            if(c[i]==to)
+                p2=i;
+        }
+        weight=dialog->getValue();
+        if(weight==0)
+            return -1;
+        gh->setEdge(p1,p2,weight);
+        return 1;
+    }
+    else
+        return 2;
+    delete dialog;
+}
+
+//删除边
+int delEdge_Graph(QWidget *parent,QGraphicsScene *scene,Graph *gh){
+    Dialog_graph_delete *dialog=new Dialog_graph_delete(parent);
+    dialog->setBox(gh->get_vertex(),gh->getLen());
+    int ret=dialog->exec();
+    if(ret==QDialog::Accepted){
+        QString from,to;
+        int p1,p2;
+        char *c=gh->get_vertex();
+        dialog->getPos(from,to);
+        if(from==to)
+            return 0;
+        for(int i=0;i<gh->getLen();i++){
+            if(c[i]==from)
+                p1=i;
+            if(c[i]==to)
+                p2=i;
+        }
+        if(gh->delEdge(scene,p1,p2))
+            return 1;
+        else
+            return -1;
+    }
+    else
+        return 2;
+}
 
 #endif // METHODS_H

@@ -15,8 +15,13 @@ SOURCES += \
     dialog_arrlist_edit.cpp \
     dialog_arrlist_insert.cpp \
     dialog_arrlist_load.cpp \
+    dialog_graph_delete.cpp \
+    dialog_graph_editedge.cpp \
     dialog_input.cpp \
     dialog_linkstack_push.cpp \
+    edge.cpp \
+    graph.cpp \
+    graphm.cpp \
     link.cpp \
     linkstack.cpp \
     main.cpp \
@@ -25,13 +30,21 @@ SOURCES += \
 
 HEADERS += \
     arrlist.h \
+    arrqueue.h \
     dialog_arrlist_append.h \
     dialog_arrlist_delete.h \
     dialog_arrlist_edit.h \
     dialog_arrlist_insert.h \
     dialog_arrlist_load.h \
+    dialog_graph_delete.h \
+    dialog_graph_editedge.h \
     dialog_input.h \
     dialog_linkstack_push.h \
+    dist.h \
+    edge.h \
+    graph.h \
+    graph_methods.h \
+    graphm.h \
     link.h \
     linkstack.h \
     mainwindow.h \
@@ -45,6 +58,8 @@ FORMS += \
     dialog_arrlist_edit.ui \
     dialog_arrlist_insert.ui \
     dialog_arrlist_load.ui \
+    dialog_graph_delete.ui \
+    dialog_graph_editedge.ui \
     dialog_input.ui \
     dialog_linkstack_push.ui \
     mainwindow.ui \

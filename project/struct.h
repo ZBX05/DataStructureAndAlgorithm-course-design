@@ -1044,7 +1044,9 @@ int minVertex(Graph& G, Dist*& D) {
     return v;
 }
 
-void Visit(Graph g, int n) { if (n != '#')cout << n; }
+void Visit(Graph g, int n) {
+    if (n != '#')cout << n;
+}
 /*
 void Kruskal(Graph& G, Edge* MST) {
     ParTree<int> A(G.VerticesNum());

@@ -15,7 +15,9 @@ public:
     explicit Dialog_arrlist_delete(QWidget *parent = nullptr);
     ~Dialog_arrlist_delete();
     void setBox(int len);
+    void setBox(char *str,int len);
     int getPos();
+    QString getVertexPos();
 private:
     Ui::Dialog_arrlist_delete *ui;
 };

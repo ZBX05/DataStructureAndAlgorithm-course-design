@@ -3,6 +3,7 @@
 #include "arrlist.h"
 #include "methods.h"
 #include "dialog_arrlist_load.h"
+#include "graph_methods.h"
 #include <QtGui>
 #include <QWidget>
 #include <QPushButton>
@@ -52,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent):
 //    QGraphicsLineItem *line=new QGraphicsLineItem(nullptr);
 
 
+
     //复选框1
     QCheckBox *chb=new QCheckBox("轻量模式",this);
     chb->setChecked(true);
@@ -99,6 +101,15 @@ MainWindow::MainWindow(QWidget *parent):
     QAction *edit_ls=linkstack_meu->addAction("修改数据");
     QAction *matching=linkstack_meu->addAction("🎇括号匹配");
     QAction *calculate=linkstack_meu->addAction("🎇表达式求值");
+    QMenu *graph_meu=new QMenu("图");
+    meu1->addMenu(graph_meu);
+    QAction *add_vertex=graph_meu->addAction("添加节点");
+    QAction *del_vertex=graph_meu->addAction("删除节点");
+    QAction *set_edge=graph_meu->addAction("添加/修改边");
+    QAction *del_edge=graph_meu->addAction("删除边");
+    QAction *dfs=graph_meu->addAction("🎇深度优先周游");
+    QAction *bfs=graph_meu->addAction("🎇广度优先周游");
+    QAction *prim=graph_meu->addAction("🎇Prim算法求最小生成树");
 
     //底部状态栏
     QStatusBar *stBar=new QStatusBar();
@@ -106,6 +117,33 @@ MainWindow::MainWindow(QWidget *parent):
     QLabel *info= new QLabel(this);
     stBar->addWidget(info);
 
+
+    connect(rab1,&QRadioButton::clicked,[=]{
+        if(rab3->isChecked()){
+            chb->setChecked(true);
+            chb->setDisabled(true);
+        }
+        if(!rab3->isChecked())
+            chb->setDisabled(false);
+    });
+
+    connect(rab2,&QRadioButton::clicked,[=]{
+        if(rab3->isChecked()){
+            chb->setChecked(true);
+            chb->setDisabled(true);
+        }
+        if(!rab3->isChecked())
+            chb->setDisabled(false);
+    });
+
+    connect(rab3,&QRadioButton::clicked,[=]{
+        if(rab3->isChecked()){
+            chb->setChecked(true);
+            chb->setDisabled(true);
+        }
+        if(!rab3->isChecked())
+            chb->setDisabled(false);
+    });
     //////////////////////////////////////////
     //顺序表菜单
     //修改数据
@@ -301,6 +339,202 @@ back2:
             info->setText("选择的数据类型不正确！");
     });
     //////////////////////////////////////////
+    //图菜单
+    //添加节点
+    connect(add_vertex,&QAction::triggered,[=]{
+        if(rab3->isChecked()){
+            if(graph->getNumVertex()!=0){
+                if(graph->addVertex()){
+                    graph->update_graph(scene);
+                    info->setText("添加节点成功！");
+                }
+                else
+                    info->setText("添加节点失败！已到达分配的最大节点数！");
+            }
+            else
+                info->setText("请先加载图！");
+        }
+        else
+            info->setText("选择的数据类型不正确！");
+    });
+
+    //删除节点
+    connect(del_vertex,&QAction::triggered,[=](){
+        if(rab3->isChecked()){
+            if(graph->getNumVertex()!=0){
+                if(graph->getLen()!=0){
+                    if(delVertex_Graph(this,scene,graph)){
+                        graph->update_graph(scene);
+                        info->setText("删除节点成功！");
+                    }
+                }
+                else
+                    info->setText("图已经没有节点了！");
+            }
+            else
+                info->setText("请先加载图！");
+        }
+        else
+            info->setText("选择的数据类型不正确！");
+    });
+
+    //添加/修改边
+    connect(set_edge,&QAction::triggered,[=]{
+       if(rab3->isChecked()){
+           if(graph->getNumVertex()!=0){
+               if(graph->getLen()>=2){
+                    int code=editEdge_Graph(this,graph);
+                    if(code==1){
+                        graph->update_graph(scene);
+                        info->setText("对边的操作成功！");
+                    }
+                    else if(code==0)
+                        info->setText("起点和终点不能相同！");
+                    else if(code==-1)
+                        info->setText("边的权重不能设置为0！");
+               }
+               else
+                   info->setText("图的节点数不够多！");
+           }
+           else
+               info->setText("请先加载图！");
+       }
+       else
+           info->setText("选择的数据类型不正确！");
+    });
+
+    //删除边
+    connect(del_edge,&QAction::triggered,[=]{
+       if(rab3->isChecked()){
+           if(graph->getNumVertex()!=0){
+               if(graph->EdgesNum()!=0){
+                    int code=delEdge_Graph(this,scene,graph);
+                    if(code==1){
+                        graph->update_graph(scene);
+                        info->setText("删除边成功！");
+                    }
+                    else if(code==0)
+                        info->setText("起点和终点不能相同！");
+                    else if(code==-1)
+                        info->setText("选定的起点和终点之间没有边！");
+               }
+               else
+                   info->setText("图的边数已经为0！");
+           }
+           else
+               info->setText("请先加载图！");
+       }
+       else
+           info->setText("选择的数据类型不正确！");
+    });
+
+    //深度优先周游
+    connect(dfs,&QAction::triggered,[=]{
+        if(rab3->isChecked()){
+            QGraphicsEllipseItem *unit=graph->get_unit();
+            QString text="深度优先周游完成！周游序列为：";
+            QTimer* timer=new QTimer(nullptr);
+            timer->setSingleShot(true);
+            QEventLoop* loop=new QEventLoop(nullptr);
+            Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
+            QPen *pen=new QPen();
+            pen->setWidth(4);
+            pen->setColor(Qt::green);
+            if(graph->getNumVertex()!=0){
+                QStringList str;
+                DFS(*graph,0,str);
+                for(int i=0;i<str.length();i++){
+                    timer->start(1000);
+                    loop->exec();
+                    unit[str[i].toInt(nullptr,10)].setPen(*pen);
+                    scene->update();
+                    text.append(QString(graph->get_vertex()[str[i].toInt(nullptr,10)]));
+                }
+                info->setText(text);
+                pen->setColor(Qt::black);
+                timer->start(3000);
+                loop->exec();
+                graph->update_graph(scene);
+            }
+            else
+                info->setText("请先加载图！");
+        }
+        else
+            info->setText("选择的数据类型不正确！");
+    });
+
+    //广度优先周游
+    connect(bfs,&QAction::triggered,[=]{
+        if(rab3->isChecked()){
+            if(graph->getNumVertex()!=0){
+                QGraphicsEllipseItem *unit=graph->get_unit();
+                QString text="广度优先周游完成！周游序列为：";
+                QTimer* timer=new QTimer(nullptr);
+                timer->setSingleShot(true);
+                QEventLoop* loop=new QEventLoop(nullptr);
+                Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
+                QPen *pen=new QPen();
+                pen->setWidth(4);
+                pen->setColor(Qt::green);
+                QStringList str;
+                BFS(*graph,0,str);
+                for(int i=0;i<str.length();i++){
+                    timer->start(1000);
+                    loop->exec();
+                    unit[str[i].toInt(nullptr,10)].setPen(*pen);
+                    scene->update();
+                    text.append(QString(graph->get_vertex()[str[i].toInt(nullptr,10)]));
+                }
+                info->setText(text);
+                pen->setColor(Qt::black);
+                timer->start(3000);
+                loop->exec();
+                graph->update_graph(scene);
+            }
+            else
+                info->setText("请先加载图！");
+        }
+        else
+            info->setText("选择的数据类型不正确！");
+    });
+
+    //Prim算法
+    connect(prim,&QAction::triggered,[=]{
+        if(rab3->isChecked()){
+            if(graph->getNumVertex()!=0){
+                QGraphicsLineItem **line=graph->get_line();
+                QGraphicsEllipseItem *unit=graph->get_unit();
+                QString text="Prim算法完成！";
+                QTimer* timer=new QTimer(nullptr);
+                timer->setSingleShot(true);
+                QEventLoop* loop=new QEventLoop(nullptr);
+                Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
+                QPen *pen=new QPen();
+                pen->setWidth(4);
+                pen->setColor(Qt::green);
+                QStringList str;
+                Edge *MST=new Edge[graph->getNumVertex()];
+                Prim(*graph,0,MST,str);
+                for(int i=0;i<str.length();i++){
+                    timer->start(500);
+                    loop->exec();
+                    unit[str[i].toInt(nullptr,10)].setPen(*pen);
+                    scene->update();
+                    if(i!=str.length()-1){
+                        timer->start(500);
+                        loop->exec();
+                        MST[i].from>MST[i].to?line[MST[i].from][MST[i].to].setPen(*pen):line[MST[i].to][MST[i].from].setPen(*pen);
+                    }
+                }
+                info->setText(text);
+            }
+            else
+                info->setText("请先加载图！");
+        }
+        else
+            info->setText("选择的数据类型不正确！");
+    });
+    //////////////////////////////////////////
     //清除按钮
     connect(btn2,&QPushButton::clicked,[=](){
         if(rab1->isChecked()){
@@ -319,11 +553,19 @@ back2:
                 info->setText("链式栈已清除！");
             }
         }
+        if(rab3->isChecked()){
+            if(graph->isEmpty())
+                info->setText("图已经是空的了！");
+            else{
+                graph->clear();
+                info->setText("图已清空！");
+            }
+        }
     });
 
     //载入按钮
     connect(btn1,&QPushButton::clicked,[=](){
-        chb->setDisabled(true);
+//        chb->setDisabled(true);
         if(rab1->isChecked()){
             delete ArrayList;
             Dialog_arrlist_load *dialog=new Dialog_arrlist_load(this);
@@ -380,6 +622,34 @@ back2:
             else
                 LinkStack=new linkStack(0);
         }
+        if(rab3->isChecked()){
+            delete graph;
+            Dialog_arrlist_load *dialog=new Dialog_arrlist_load(this);
+            int ret=dialog->exec();
+            if(ret==QDialog::Accepted){
+                int size=dialog->getValue();
+                if(chb->isChecked()&&size>15){
+                    info->setText("轻量模式下最大节点数必须在15以内！");
+                    graph=new Graph(0);
+                }
+                else{
+                    graph=new Graph(size);
+                    int code=load_Graph(this,graph,size);
+                    if(code==1){
+                        graph->update_graph(scene);
+                        info->setText("载入成功！");
+                    }
+                    else if(code==0)
+                        info->setText("载入的文件不能为空！");
+                    else if(code==-2)
+                        info->setText("载入的文件节点数超出设定的范围！");
+                    else if(code==-1)
+                        info->setText("载入失败！");
+                }
+            }
+            else
+                graph=new Graph(0);
+        }
     });
 }
 
@@ -387,6 +657,7 @@ back2:
 MainWindow::~MainWindow()
 {
     delete w;
+    delete graph;
     delete ArrayList;
     delete LinkStack;
     delete ui;
