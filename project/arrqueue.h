@@ -8,7 +8,9 @@ private:
     int* qu;
 public:
     int mSize;
-    arrQueue() {qu = NULL;}
+    arrQueue(){
+        qu=nullptr;
+    }
     arrQueue(int size) {
         mSize = size + 1;
         qu = new int[mSize];

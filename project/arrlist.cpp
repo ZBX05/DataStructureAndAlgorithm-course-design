@@ -235,6 +235,7 @@ void arrList::draw_arrList(QGraphicsScene* scene){
     for(i=0;i<curLen;i++){
         unit[i].setPen(pen);
         scene->addItem(&unit[i]);
+        scene->addItem(&text[i]);
     }
 }
 

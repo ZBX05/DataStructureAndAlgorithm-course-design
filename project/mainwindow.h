@@ -24,8 +24,13 @@ public:
     arrList *ArrayList=new arrList(0);
     linkStack *LinkStack=new linkStack(0);
     Graph *graph=new Graph(0);
+    int hit_tag=0;
+    int hit_pos=-1;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void mousePressEvent(QMouseEvent *ev);
+    void mouseMoveEvent(QMouseEvent *ev);
+    void mouseReleaseEvent(QMouseEvent *ev);
 private:
     Ui::MainWindow *ui;
 };

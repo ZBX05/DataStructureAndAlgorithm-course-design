@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+//#include "myscene.h"
 #include "ui_mainwindow.h"
 #include "arrlist.h"
 #include "methods.h"
@@ -18,6 +19,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
+#include <QGraphicsPathItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QLayout>
@@ -32,27 +34,22 @@ MainWindow::MainWindow(QWidget *parent):
 
     setFixedSize(1200,700);
 
-    scene=new QGraphicsScene(this);
+    QGraphicsScene *scene=new QGraphicsScene(this);
     //scene->setSceneRect(-300,-250,300,250);
     scene->setSceneRect(-600,-350,1190,650);
     view=new QGraphicsView(this);
     view->resize(1200,700);
     view->setScene(scene);
     view->setAlignment(Qt::AlignCenter);
-//    QPen pen;
-//    pen.setWidth(2);
-//    pen.setColor(QColorConstants::Black);
-//    QGraphicsRectItem *rect1=new QGraphicsRectItem(-200,-200,20,20,nullptr);
-//    rect1->setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
-//    rect1->setPen(pen);
-//    scene->addItem(rect1);
-//    QGraphicsRectItem *rect2=new QGraphicsRectItem(-160,-200,20,20,nullptr);
-//    rect2->setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
-//    rect2->setPen(pen);
-//    scene->addItem(rect2);
-//    QGraphicsLineItem *line=new QGraphicsLineItem(nullptr);
-
-
+//    QGraphicsEllipseItem *ellipse1=new QGraphicsEllipseItem(-500,-200,40,40,nullptr);
+//    QGraphicsEllipseItem *ellipse2=new QGraphicsEllipseItem(-300,-200,40,40,nullptr);
+//    ellipse1->setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
+//    ellipse2->setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
+//    QGraphicsLineItem *line=new QGraphicsLineItem(-480,-180,-280,-180);
+//    scene->addItem(ellipse1);
+//    scene->addItem(ellipse2);
+//    scene->addItem(line);
+//    qDebug()<<ellipse1->boundingRect().x()<<","<<ellipse1->boundingRect().y();
 
     //复选框1
     QCheckBox *chb=new QCheckBox("轻量模式",this);
@@ -123,8 +120,29 @@ MainWindow::MainWindow(QWidget *parent):
             chb->setChecked(true);
             chb->setDisabled(true);
         }
-        if(!rab3->isChecked())
+        else
             chb->setDisabled(false);
+        if(rab1->isChecked()){
+            foreach (QGraphicsItem *item, scene->items()) {
+                scene->removeItem(item);
+            }
+            if(ArrayList->getMaxSize()!=0&&ArrayList->length()!=0)
+                ArrayList->draw_arrList(scene);
+        }
+        else if(rab2->isChecked()){
+            foreach (QGraphicsItem *item, scene->items()) {
+                scene->removeItem(item);
+            }
+            if(LinkStack->getSize()!=0&&!LinkStack->isEmpty())
+                LinkStack->draw_linkStack(scene);
+        }
+        else{
+            foreach (QGraphicsItem *item, scene->items()) {
+                scene->removeItem(item);
+            }
+            if(graph->getNumVertex()!=0&&graph->len!=0)
+                graph->update_graph(scene);
+        }
     });
 
     connect(rab2,&QRadioButton::clicked,[=]{
@@ -132,8 +150,29 @@ MainWindow::MainWindow(QWidget *parent):
             chb->setChecked(true);
             chb->setDisabled(true);
         }
-        if(!rab3->isChecked())
+        else
             chb->setDisabled(false);
+        if(rab1->isChecked()){
+            foreach (QGraphicsItem *item, scene->items()) {
+                scene->removeItem(item);
+            }
+            if(ArrayList->getMaxSize()!=0&&ArrayList->length()!=0)
+                ArrayList->draw_arrList(scene);
+        }
+        else if(rab2->isChecked()){
+            foreach (QGraphicsItem *item, scene->items()) {
+                scene->removeItem(item);
+            }
+            if(LinkStack->getSize()!=0&&!LinkStack->isEmpty())
+                LinkStack->draw_linkStack(scene);
+        }
+        else{
+            foreach (QGraphicsItem *item, scene->items()) {
+                scene->removeItem(item);
+            }
+            if(graph->getNumVertex()!=0&&graph->len!=0)
+                graph->update_graph(scene);
+        }
     });
 
     connect(rab3,&QRadioButton::clicked,[=]{
@@ -141,8 +180,29 @@ MainWindow::MainWindow(QWidget *parent):
             chb->setChecked(true);
             chb->setDisabled(true);
         }
-        if(!rab3->isChecked())
+        else
             chb->setDisabled(false);
+        if(rab1->isChecked()){
+            foreach (QGraphicsItem *item, scene->items()) {
+                scene->removeItem(item);
+            }
+            if(ArrayList->getMaxSize()!=0&&ArrayList->length()!=0)
+                ArrayList->draw_arrList(scene);
+        }
+        else if(rab2->isChecked()){
+            foreach (QGraphicsItem *item, scene->items()) {
+                scene->removeItem(item);
+            }
+            if(LinkStack->getSize()!=0&&!LinkStack->isEmpty())
+                LinkStack->draw_linkStack(scene);
+        }
+        else{
+            foreach (QGraphicsItem *item, scene->items()) {
+                scene->removeItem(item);
+            }
+            if(graph->getNumVertex()!=0&&graph->len!=0)
+                graph->update_graph(scene);
+        }
     });
     //////////////////////////////////////////
     //顺序表菜单
@@ -431,16 +491,17 @@ back2:
     //深度优先周游
     connect(dfs,&QAction::triggered,[=]{
         if(rab3->isChecked()){
-            QGraphicsEllipseItem *unit=graph->get_unit();
-            QString text="深度优先周游完成！周游序列为：";
-            QTimer* timer=new QTimer(nullptr);
-            timer->setSingleShot(true);
-            QEventLoop* loop=new QEventLoop(nullptr);
-            Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
-            QPen *pen=new QPen();
-            pen->setWidth(4);
-            pen->setColor(Qt::green);
             if(graph->getNumVertex()!=0){
+                graph->update_graph(scene);
+                QGraphicsEllipseItem *unit=graph->get_unit();
+                QString text="深度优先周游完成！周游序列为：";
+                QTimer* timer=new QTimer(nullptr);
+                timer->setSingleShot(true);
+                QEventLoop* loop=new QEventLoop(nullptr);
+                Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
+                QPen *pen=new QPen();
+                pen->setWidth(4);
+                pen->setColor(Qt::green);
                 QStringList str;
                 DFS(*graph,0,str);
                 for(int i=0;i<str.length();i++){
@@ -451,10 +512,12 @@ back2:
                     text.append(QString(graph->get_vertex()[str[i].toInt(nullptr,10)]));
                 }
                 info->setText(text);
-                pen->setColor(Qt::black);
-                timer->start(3000);
-                loop->exec();
-                graph->update_graph(scene);
+//                pen->setColor(Qt::black);
+//                timer->start(3000);
+//                loop->exec();
+//                graph->update_graph(scene);
+                for(int i=0;i<graph->getNumVertex();i++)
+                    graph->Mark[i]=UNVISITED;
             }
             else
                 info->setText("请先加载图！");
@@ -467,6 +530,7 @@ back2:
     connect(bfs,&QAction::triggered,[=]{
         if(rab3->isChecked()){
             if(graph->getNumVertex()!=0){
+                graph->update_graph(scene);
                 QGraphicsEllipseItem *unit=graph->get_unit();
                 QString text="广度优先周游完成！周游序列为：";
                 QTimer* timer=new QTimer(nullptr);
@@ -486,10 +550,12 @@ back2:
                     text.append(QString(graph->get_vertex()[str[i].toInt(nullptr,10)]));
                 }
                 info->setText(text);
-                pen->setColor(Qt::black);
-                timer->start(3000);
-                loop->exec();
-                graph->update_graph(scene);
+//                pen->setColor(Qt::black);
+//                timer->start(3000);
+//                loop->exec();
+//                graph->update_graph(scene);
+                for(int i=0;i<graph->getNumVertex();i++)
+                    graph->Mark[i]=UNVISITED;
             }
             else
                 info->setText("请先加载图！");
@@ -502,31 +568,46 @@ back2:
     connect(prim,&QAction::triggered,[=]{
         if(rab3->isChecked()){
             if(graph->getNumVertex()!=0){
-                QGraphicsLineItem **line=graph->get_line();
-                QGraphicsEllipseItem *unit=graph->get_unit();
-                QString text="Prim算法完成！";
-                QTimer* timer=new QTimer(nullptr);
-                timer->setSingleShot(true);
-                QEventLoop* loop=new QEventLoop(nullptr);
-                Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
-                QPen *pen=new QPen();
-                pen->setWidth(4);
-                pen->setColor(Qt::green);
-                QStringList str;
-                Edge *MST=new Edge[graph->getNumVertex()];
-                Prim(*graph,0,MST,str);
-                for(int i=0;i<str.length();i++){
-                    timer->start(500);
-                    loop->exec();
-                    unit[str[i].toInt(nullptr,10)].setPen(*pen);
-                    scene->update();
-                    if(i!=str.length()-1){
+                Dialog_arrlist_delete *dialog=new Dialog_arrlist_delete(this);
+                dialog->setBox(graph->get_vertex(),graph->getLen());
+                dialog->setInfo(QString("起始位置:"));
+                int ret=dialog->exec();
+                if(ret==QDialog::Accepted){
+                    graph->update_graph(scene);
+                    QString string=dialog->getVertexPos();
+                    int start=0;
+                    for(int i=0;i<graph->getLen();i++){
+                        if(string[0]==(QChar)graph->get_vertex()[i]){
+                            start=i;
+                        }
+                    }
+                    QGraphicsLineItem **line=graph->get_line();
+                    QGraphicsEllipseItem *unit=graph->get_unit();
+                    QString text="Prim算法完成！";
+                    QTimer* timer=new QTimer(nullptr);
+                    timer->setSingleShot(true);
+                    QEventLoop* loop=new QEventLoop(nullptr);
+                    Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
+                    QPen *pen=new QPen();
+                    pen->setWidth(4);
+                    pen->setColor(Qt::green);
+                    QStringList str;
+                    Edge *MST=new Edge[graph->getNumVertex()];
+                    Prim(*graph,start,MST,str);
+                    for(int i=0;i<str.length();i++){
                         timer->start(500);
                         loop->exec();
-                        MST[i].from>MST[i].to?line[MST[i].from][MST[i].to].setPen(*pen):line[MST[i].to][MST[i].from].setPen(*pen);
+                        unit[str[i].toInt(nullptr,10)].setPen(*pen);
+                        scene->update();
+                        if(i!=str.length()-1){
+                            timer->start(500);
+                            loop->exec();
+                            MST[i].from>MST[i].to?line[MST[i].from][MST[i].to].setPen(*pen):line[MST[i].to][MST[i].from].setPen(*pen);
+                        }
                     }
+                    info->setText(text);
                 }
-                info->setText(text);
+                delete dialog;
             }
             else
                 info->setText("请先加载图！");
@@ -653,6 +734,82 @@ back2:
     });
 }
 
+void MainWindow::mousePressEvent(QMouseEvent *ev){
+    grabMouse();
+    if(ev->button()==Qt::LeftButton&&hit_tag==0&&graph->getLen()!=0){
+        for(int i=0;i<graph->getLen();i++){
+            if(graph->get_vertex()[i]!=0){
+                QPointF point=QPointF(graph->get_unit()[i].mapFromScene(graph->get_unit()[i].boundingRect().x()+605,
+                                                                    graph->get_unit()[i].boundingRect().y()+375));
+                if(ev->pos().x()>=point.x()&&
+                        ev->pos().x()<=point.x()+40&&
+                        ev->pos().y()>=point.y()&&
+                        ev->pos().y()<=point.y()+40){
+                    graph->tag[i]=1;
+                    hit_pos=i;
+                    hit_tag=1;
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *ev){
+    releaseMouse();
+    if(ev->button()==Qt::LeftButton&&hit_tag==1&&graph->getLen()!=0){
+        for(int i=0;i<graph->getLen();i++){
+            if(graph->get_vertex()[i]!=0){
+                if(graph->tag[i]==1){
+                    graph->tag[i]=0;
+                    hit_pos=-1;
+                    hit_tag=0;
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *ev){
+    if((ev->buttons()&Qt::LeftButton)&&hit_tag==1&&graph->getLen()!=0){
+        if(hit_pos>=0){
+            if(graph->tag[hit_pos]==1){
+                if(ev->pos().x()<=20||ev->pos().y()<=20||ev->pos().x()>=1180||ev->pos().y()>=680){
+                    qreal x=ev->pos().x(),y=ev->pos().y();
+                    if(ev->pos().x()<=20)
+                        x=20;
+                    else if(ev->pos().x()>=1180)
+                        x=1180;
+                    if(ev->pos().y()<=20)
+                        y=20;
+                    else if(ev->pos().y()>=680)
+                        y=680;
+                    graph->get_unit()[hit_pos].setRect(x-625,y-395,40,40);
+                }
+                else
+                    graph->get_unit()[hit_pos].setRect(ev->pos().x()-625,ev->pos().y()-395,40,40);
+                graph->get_text()[hit_pos].setPos(graph->get_unit()[hit_pos].boundingRect().x()+10,graph->get_unit()[hit_pos].boundingRect().y()+10);
+                for(int i=0;i<graph->getLen();i++){
+                    if(graph->get_matrix()[hit_pos][i]!=0){
+                        graph->get_line()[hit_pos][i].setLine(graph->get_unit()[hit_pos].boundingRect().x()+20,
+                                                              graph->get_unit()[hit_pos].boundingRect().y()+20,
+                                                              graph->get_unit()[i].boundingRect().x()+20,
+                                                              graph->get_unit()[i].boundingRect().y()+20);
+                        graph->get_w()[hit_pos][i].setPos((graph->get_unit()[hit_pos].boundingRect().x()+20+graph->get_unit()[i].boundingRect().x()+20)/2,
+                                                          (graph->get_unit()[hit_pos].boundingRect().y()+20+graph->get_unit()[i].boundingRect().y()+20)/2);
+                    }
+                    if(graph->get_matrix()[i][hit_pos]!=0){
+                        graph->get_line()[i][hit_pos].setLine(graph->get_unit()[i].boundingRect().x()+20,
+                                                              graph->get_unit()[i].boundingRect().y()+20,
+                                                              graph->get_unit()[hit_pos].boundingRect().x()+20,
+                                                              graph->get_unit()[hit_pos].boundingRect().y()+20);
+                        graph->get_w()[i][hit_pos].setPos((graph->get_unit()[i].boundingRect().x()+20+graph->get_unit()[hit_pos].boundingRect().x()+20)/2+10,
+                                                          (graph->get_unit()[i].boundingRect().y()+20+graph->get_unit()[hit_pos].boundingRect().y()+20)/2);
+                    }
+                }
+            }
+        }
+    }
+}
 
 MainWindow::~MainWindow()
 {

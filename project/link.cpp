@@ -15,7 +15,7 @@ Link::Link(const int info,int pos,Link* next){
 }
 
 Link::~Link(){
-    delete triangle;
+//    delete triangle;
     delete line;
     delete point;
     delete unit3;

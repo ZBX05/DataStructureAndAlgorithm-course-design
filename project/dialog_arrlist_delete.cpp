@@ -13,6 +13,12 @@ Dialog_arrlist_delete::~Dialog_arrlist_delete()
     delete ui;
 }
 
+void Dialog_arrlist_delete::setInfo(QString str)
+{
+    ui->label->setText(str);
+    windowTitleChanged("选择起点");
+}
+
 void Dialog_arrlist_delete::setBox(int len)
 {
     QStringList list;

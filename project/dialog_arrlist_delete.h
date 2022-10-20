@@ -16,6 +16,7 @@ public:
     ~Dialog_arrlist_delete();
     void setBox(int len);
     void setBox(char *str,int len);
+    void setInfo(QString str);
     int getPos();
     QString getVertexPos();
 private:

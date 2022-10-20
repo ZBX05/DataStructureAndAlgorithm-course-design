@@ -379,6 +379,9 @@ void linkStack::draw_linkStack(QGraphicsScene *scene){
         scene->addItem(p->unit3);
         p->line->setPen(pen_);
         scene->addItem(p->line);
+        scene->addItem(p->point);
+        scene->addItem(p->text1);
+        scene->addItem(p->text2);
         p=p->next;
     }
 }

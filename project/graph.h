@@ -5,7 +5,7 @@
 #include <QGraphicsTextItem>
 #include <QGraphicsScene>
 #include <QGraphicsLineItem>
-//#include "graph_methods.h"
+#include <QGraphicsRectItem>
 
 
 class Graph:public Graphm
@@ -16,9 +16,11 @@ private:
     int **matrix;
     char *vertex;
     QGraphicsEllipseItem *unit;
-    QGraphicsTextItem *text,**w;
+    QGraphicsRectItem **matrix_unit;
+    QGraphicsTextItem *text,**w,**matrix_text;
     QGraphicsLineItem **line;
 public:
+    int *tag;
     Graph(int numVertex);
     ~Graph();
     void clear();
@@ -39,6 +41,9 @@ public:
     char* get_vertex();
     QGraphicsEllipseItem* get_unit();
     QGraphicsLineItem** get_line();
+    QGraphicsTextItem* get_text();
+    QGraphicsTextItem** get_w();
+    int** get_matrix();
     bool addVertex();
     void delVertex(int p,QGraphicsScene *scene);
     void update_graph(QGraphicsScene *scene);
