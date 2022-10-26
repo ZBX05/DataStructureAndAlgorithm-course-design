@@ -90,4 +90,37 @@ void Prim(Graph& G, int s, Edge* &MST,QStringList &str) {
     delete e;
 }
 
+//void Floyd(Graph& G, Dist**& D) {
+//    int i, j, v;
+//    Edge *e;
+//    D = new Dist * [G.getLen()];
+//    for (i = 0; i < G.getLen(); i++)
+//        D[i] = new Dist[G.getLen()];
+//    for (i = 0; i < G.getLen(); i++)
+//        for (j = 0; j < G.getLen(); j++) {
+//            if (i == j) {
+//                D[i][j].length = 0;
+//                D[i][j].pre = i;
+//            }
+//            else {
+//                D[i][j].length = (int)INFINITY;
+//                D[i][j].pre = -1;
+//            }
+//        }
+//    for (v = 0; v < G.getLen(); v++)
+//        if(G.get_vertex()[v]!=0)
+//            for (e = G.FirstEdge(v); G.isEdge(*e); e = G.NextEdge(*e)) {
+//                D[v][G.ToVertex(*e)].length = G.weight(*e);
+//                D[v][G.ToVertex(*e)].pre = v;
+//            }
+//    for (v = 0; v < G.getLen(); v++)
+//        for (i = 0; i < G.getLen(); i++)
+//            for (j = 0; j < G.getLen(); j++)
+//                if (D[i][j].length > (D[i][v].length + D[v][j].length)) {
+//                    D[i][j].length = D[i][v].length + D[v][j].length;
+//                    D[i][j].pre = D[v][j].pre;
+//                }
+
+//}
+
 #endif // GRAPH_METHODS_H

@@ -27,13 +27,13 @@ public:
     int getMaxSize();
     int length();
     bool append(const int value);
-    bool insert(QGraphicsScene *scene,const int p,const int value);
-    bool delete_(QGraphicsScene *scene,const int p);
+    bool insert(QGraphicsScene *scene,const int p,const int value,int step);
+    bool delete_(QGraphicsScene *scene,const int p,int step);
     bool setValue(const int p,const int value);
     bool getValue(const int p,int &value);
     bool getPos(int& p,const int value);
     void draw_arrList(QGraphicsScene *scene);
-    void bubbleSort(QLabel *info);
+    void bubbleSort(QLabel *info,int step);
 };
 
 #endif // ARRLIST_H

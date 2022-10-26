@@ -75,7 +75,7 @@ bool arrList::append(const int value){
     return false;
 }
 
-bool arrList::insert(QGraphicsScene* scene,const int p,const int value){
+bool arrList::insert(QGraphicsScene* scene,const int p,const int value,int step){
     QTimer* timer=new QTimer(nullptr);
     timer->setSingleShot(true);
     QEventLoop* loop=new QEventLoop(nullptr);
@@ -98,12 +98,12 @@ bool arrList::insert(QGraphicsScene* scene,const int p,const int value){
         scene->addItem(&unit[curLen]);
         for(i=curLen;i>p;i--){
             aList[i]=aList[i-1];
-            timer->start(500);
+            timer->start(step);
             loop->exec();
             text[i].setPlainText(text[i-1].toPlainText());
         }
         aList[p]=value;
-        timer->start(500);
+        timer->start(step);
         loop->exec();
         text[p].setPlainText(QString::number(value,10));
         curLen++;
@@ -113,7 +113,7 @@ bool arrList::insert(QGraphicsScene* scene,const int p,const int value){
     return true;
 }
 
-bool arrList::delete_(QGraphicsScene* scene,const int p){
+bool arrList::delete_(QGraphicsScene* scene,const int p,int step){
     QTimer* timer=new QTimer(nullptr);
     timer->setSingleShot(true);
     QEventLoop* loop=new QEventLoop(nullptr);
@@ -133,12 +133,12 @@ bool arrList::delete_(QGraphicsScene* scene,const int p){
     }
     for(i=p;i<curLen-1;i++){
         aList[i]=aList[i+1];
-        timer->start(500);
+        timer->start(step);
         loop->exec();
         text[i].setPlainText(text[i+1].toPlainText());
     }
     curLen--;
-    timer->start(500);
+    timer->start(step);
     loop->exec();
     scene->removeItem(&unit[curLen]);
     //text[curLen].setPlainText("");
@@ -176,7 +176,7 @@ bool arrList::getPos(int& p,const int value){
     return false;
 }
 
-void arrList::bubbleSort(QLabel* info){
+void arrList::bubbleSort(QLabel* info,int step){
     bool NoSwap;
     int i,j,tmp;
     QPen pen,pen1,pen2;
@@ -197,14 +197,14 @@ void arrList::bubbleSort(QLabel* info){
         unit[i].setPen(pen1);
         for(j=curLen-1;j>i;j--){
             unit[j].setPen(pen2);
-            timer->start(500);
+            timer->start(step);
             loop->exec();
             if(aList[j]<aList[j-1]){
                 tmp=aList[j];
                 aList[j]=aList[j-1];
                 aList[j-1]=tmp;
                 NoSwap=false;
-                timer->start(500);
+                timer->start(step);
                 loop->exec();
                 temp=text[j].toPlainText();
                 text[j].setPlainText(text[j-1].toPlainText());

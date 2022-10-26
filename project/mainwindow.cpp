@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 //#include "myscene.h"
+#include "dialog_set_step.h"
 #include "ui_mainwindow.h"
 #include "arrlist.h"
 #include "methods.h"
@@ -41,15 +42,9 @@ MainWindow::MainWindow(QWidget *parent):
     view->resize(1200,700);
     view->setScene(scene);
     view->setAlignment(Qt::AlignCenter);
-//    QGraphicsEllipseItem *ellipse1=new QGraphicsEllipseItem(-500,-200,40,40,nullptr);
-//    QGraphicsEllipseItem *ellipse2=new QGraphicsEllipseItem(-300,-200,40,40,nullptr);
-//    ellipse1->setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
-//    ellipse2->setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
-//    QGraphicsLineItem *line=new QGraphicsLineItem(-480,-180,-280,-180);
-//    scene->addItem(ellipse1);
-//    scene->addItem(ellipse2);
-//    scene->addItem(line);
-//    qDebug()<<ellipse1->boundingRect().x()<<","<<ellipse1->boundingRect().y();
+
+
+
 
     //复选框1
     QCheckBox *chb=new QCheckBox("轻量模式",this);
@@ -76,6 +71,10 @@ MainWindow::MainWindow(QWidget *parent):
     //按钮2
     QPushButton *btn2=new QPushButton("清除",this);
     btn2->move(1080,165);
+
+    //按钮3
+    QPushButton *btn3=new QPushButton("全部清除",this);
+    btn3->move(1080,205);
 
 
     //顶部菜单栏
@@ -107,6 +106,18 @@ MainWindow::MainWindow(QWidget *parent):
     QAction *dfs=graph_meu->addAction("🎇深度优先周游");
     QAction *bfs=graph_meu->addAction("🎇广度优先周游");
     QAction *prim=graph_meu->addAction("🎇Prim算法求最小生成树");
+    QMenu *meu2=new QMenu("保存");
+    meb->addMenu(meu2);
+    QAction *save_this=new QAction("保存当前数据结构");
+    meu2->addAction(save_this);
+    QAction *save_all=new QAction("保存所有数据结构");
+    meu2->addAction(save_all);
+    QAction *print_screen=new QAction("截图");
+    meb->addAction(print_screen);
+    QMenu *meu3=new QMenu("设置");
+    meb->addMenu(meu3);
+    QAction *set_step=new QAction("设置动画步长");
+    meu3->addAction(set_step);
 
     //底部状态栏
     QStatusBar *stBar=new QStatusBar();
@@ -250,7 +261,7 @@ MainWindow::MainWindow(QWidget *parent):
         if(rab1->isChecked()){
             if(ArrayList->length()!=0){
                 if(ArrayList->length()<ArrayList->getMaxSize()){
-                    int code=insert_arrList(this,scene,ArrayList,info);
+                    int code=insert_arrList(this,scene,ArrayList,info,step);
                     if(code==1)
                         info->setText("插入元素成功！");
                     else if(code==0)
@@ -270,7 +281,7 @@ MainWindow::MainWindow(QWidget *parent):
     connect(delete_,&QAction::triggered,[=](){
         if(rab1->isChecked()){
             if(ArrayList->length()!=0){
-                int code=delete_arrList(this,scene,ArrayList,info);
+                int code=delete_arrList(this,scene,ArrayList,info,step);
                 if(code==1)
                     info->setText("删除元素成功！");
                 else if(code==0)
@@ -287,7 +298,7 @@ MainWindow::MainWindow(QWidget *parent):
     connect(sort,&QAction::triggered,[=](){
         if(rab1->isChecked()){
             if(ArrayList->length()!=0){
-                ArrayList->bubbleSort(info);
+                ArrayList->bubbleSort(info,step);
                 info->setText("现在顺序表是有序的了！");
             }
             else
@@ -349,7 +360,7 @@ MainWindow::MainWindow(QWidget *parent):
             w->show();
 back1:
             int value;
-            int code=w->run(1,value);
+            int code=w->run(1,value,step);
             if(code==1){
                 info->setText("括号匹配成功！");
                 w->close();
@@ -377,7 +388,7 @@ back1:
             w->show();
 back2:
             int value;
-            int code=w->run(2,value);
+            int code=w->run(2,value,step);
             if(code==1){
                 QString content="运算成功！结果为：";
                 content.append(QString::number(value,10));
@@ -492,32 +503,42 @@ back2:
     connect(dfs,&QAction::triggered,[=]{
         if(rab3->isChecked()){
             if(graph->getNumVertex()!=0){
-                graph->update_graph(scene);
-                QGraphicsEllipseItem *unit=graph->get_unit();
-                QString text="深度优先周游完成！周游序列为：";
-                QTimer* timer=new QTimer(nullptr);
-                timer->setSingleShot(true);
-                QEventLoop* loop=new QEventLoop(nullptr);
-                Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
-                QPen *pen=new QPen();
-                pen->setWidth(4);
-                pen->setColor(Qt::green);
-                QStringList str;
-                DFS(*graph,0,str);
-                for(int i=0;i<str.length();i++){
-                    timer->start(1000);
-                    loop->exec();
-                    unit[str[i].toInt(nullptr,10)].setPen(*pen);
-                    scene->update();
-                    text.append(QString(graph->get_vertex()[str[i].toInt(nullptr,10)]));
+                Dialog_arrlist_delete *dialog=new Dialog_arrlist_delete(this);
+                dialog->setBox(graph->get_vertex(),graph->getLen());
+                dialog->setInfo(QString("起始位置:"));
+                int ret=dialog->exec();
+                if(ret==QDialog::Accepted){
+                    graph->update_graph(scene);
+                    QString string=dialog->getVertexPos();
+                    int start=0;
+                    for(int i=0;i<graph->getLen();i++){
+                        if(string[0]==(QChar)graph->get_vertex()[i]){
+                            start=i;
+                        }
+                    }
+                    QGraphicsEllipseItem *unit=graph->get_unit();
+                    QString text="深度优先周游完成！周游序列为：";
+                    QTimer* timer=new QTimer(nullptr);
+                    timer->setSingleShot(true);
+                    QEventLoop* loop=new QEventLoop(nullptr);
+                    Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
+                    QPen *pen=new QPen();
+                    pen->setWidth(4);
+                    pen->setColor(Qt::green);
+                    QStringList str;
+                    DFS(*graph,start,str);
+                    for(int i=0;i<str.length();i++){
+                        timer->start(step);
+                        loop->exec();
+                        unit[str[i].toInt(nullptr,10)].setPen(*pen);
+                        scene->update();
+                        text.append(QString(graph->get_vertex()[str[i].toInt(nullptr,10)]));
+                    }
+                    info->setText(text);
+                    for(int i=0;i<graph->getNumVertex();i++)
+                        graph->Mark[i]=UNVISITED;
                 }
-                info->setText(text);
-//                pen->setColor(Qt::black);
-//                timer->start(3000);
-//                loop->exec();
-//                graph->update_graph(scene);
-                for(int i=0;i<graph->getNumVertex();i++)
-                    graph->Mark[i]=UNVISITED;
+                delete dialog;
             }
             else
                 info->setText("请先加载图！");
@@ -530,32 +551,42 @@ back2:
     connect(bfs,&QAction::triggered,[=]{
         if(rab3->isChecked()){
             if(graph->getNumVertex()!=0){
-                graph->update_graph(scene);
-                QGraphicsEllipseItem *unit=graph->get_unit();
-                QString text="广度优先周游完成！周游序列为：";
-                QTimer* timer=new QTimer(nullptr);
-                timer->setSingleShot(true);
-                QEventLoop* loop=new QEventLoop(nullptr);
-                Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
-                QPen *pen=new QPen();
-                pen->setWidth(4);
-                pen->setColor(Qt::green);
-                QStringList str;
-                BFS(*graph,0,str);
-                for(int i=0;i<str.length();i++){
-                    timer->start(1000);
-                    loop->exec();
-                    unit[str[i].toInt(nullptr,10)].setPen(*pen);
-                    scene->update();
-                    text.append(QString(graph->get_vertex()[str[i].toInt(nullptr,10)]));
+                Dialog_arrlist_delete *dialog=new Dialog_arrlist_delete(this);
+                dialog->setBox(graph->get_vertex(),graph->getLen());
+                dialog->setInfo(QString("起始位置:"));
+                int ret=dialog->exec();
+                if(ret==QDialog::Accepted){
+                    graph->update_graph(scene);
+                    QString string=dialog->getVertexPos();
+                    int start=0;
+                    for(int i=0;i<graph->getLen();i++){
+                        if(string[0]==(QChar)graph->get_vertex()[i]){
+                            start=i;
+                        }
+                    }
+                    QGraphicsEllipseItem *unit=graph->get_unit();
+                    QString text="广度优先周游完成！周游序列为：";
+                    QTimer* timer=new QTimer(nullptr);
+                    timer->setSingleShot(true);
+                    QEventLoop* loop=new QEventLoop(nullptr);
+                    Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
+                    QPen *pen=new QPen();
+                    pen->setWidth(4);
+                    pen->setColor(Qt::green);
+                    QStringList str;
+                    BFS(*graph,start,str);
+                    for(int i=0;i<str.length();i++){
+                        timer->start(step);
+                        loop->exec();
+                        unit[str[i].toInt(nullptr,10)].setPen(*pen);
+                        scene->update();
+                        text.append(QString(graph->get_vertex()[str[i].toInt(nullptr,10)]));
+                    }
+                    info->setText(text);
+                    for(int i=0;i<graph->getNumVertex();i++)
+                        graph->Mark[i]=UNVISITED;
                 }
-                info->setText(text);
-//                pen->setColor(Qt::black);
-//                timer->start(3000);
-//                loop->exec();
-//                graph->update_graph(scene);
-                for(int i=0;i<graph->getNumVertex();i++)
-                    graph->Mark[i]=UNVISITED;
+                delete dialog;
             }
             else
                 info->setText("请先加载图！");
@@ -595,12 +626,12 @@ back2:
                     Edge *MST=new Edge[graph->getNumVertex()];
                     Prim(*graph,start,MST,str);
                     for(int i=0;i<str.length();i++){
-                        timer->start(500);
+                        timer->start(step);
                         loop->exec();
                         unit[str[i].toInt(nullptr,10)].setPen(*pen);
                         scene->update();
                         if(i!=str.length()-1){
-                            timer->start(500);
+                            timer->start(step);
                             loop->exec();
                             MST[i].from>MST[i].to?line[MST[i].from][MST[i].to].setPen(*pen):line[MST[i].to][MST[i].from].setPen(*pen);
                         }
@@ -616,6 +647,121 @@ back2:
             info->setText("选择的数据类型不正确！");
     });
     //////////////////////////////////////////
+    //保存
+    //保存当前
+    connect(save_this,&QAction::triggered,[=](){
+        if(rab1->isChecked()){
+            if(ArrayList->length()==0)
+                info->setText("保存失败！顺序表是空的！");
+            else{
+                if(save_arrList(this,ArrayList))
+                    info->setText("保存成功！");
+//                else
+//                    info->setText("保存失败！");
+            }
+        }
+        if(rab2->isChecked()){
+            if(LinkStack->isEmpty())
+                info->setText("保存失败！链式栈是空的！");
+            else{
+                if(save_linkStack(this,LinkStack))
+                    info->setText("保存成功！");
+//                else
+//                    info->setText("保存失败！");
+            }
+        }
+        if(rab3->isChecked()){
+            if(graph->isEmpty())
+                info->setText("保存失败！图是空的！");
+            else{
+                if(save_Graph(this,graph))
+                    info->setText("保存成功！");
+//                else
+//                    info->setText("保存失败！");
+            }
+        }
+    });
+    //保存全部
+    connect(save_all,&QAction::triggered,[=](){
+        QString str_1="",str_2="",str_3="",text="已执行全部保存操作！执行情况：";
+        if(ArrayList->length()==0)
+            str_1="顺序表保存失败！顺序表是空的！";
+        else{
+            if(save_arrList(this,ArrayList))
+                str_1="顺序表保存成功！";
+//            else
+//                str_1="顺序表保存失败！";
+        }
+        if(LinkStack->isEmpty())
+            str_2="链式栈保存失败！链式栈是空的！";
+        else{
+            if(save_linkStack(this,LinkStack))
+                str_2="链式栈保存成功！";
+//            else
+//                str_2="链式栈保存失败！";
+        }
+        if(graph->isEmpty())
+            str_3="图保存失败！图是空的！";
+        else{
+            if(!save_Graph(this,graph))
+                str_3="图保存成功！";
+//            else
+//                str_3="图保存失败！";
+        }
+        text.append(str_1);
+        text.append(str_2);
+        text.append(str_3);
+        info->setText(text);
+    });
+    //////////////////////////////////////////
+    //截图
+    connect(print_screen,&QAction::triggered,[=](){
+        QPixmap p = this->grab(QRect(0, 0, 1200, 700));
+        if(p.save("picture.jpg"))
+            info->setText("窗口截图成功！");
+        else
+            info->setText("窗口截图失败！");
+    });
+    //////////////////////////////////////////
+    //设置
+    //设置步长
+    connect(set_step,&QAction::triggered,[=](){
+        Dialog_set_step *dialog=new Dialog_set_step(this);
+        int ret=dialog->exec();
+        if(ret==QDialog::Accepted){
+            step=dialog->get_Value();
+            info->setText("步长设置完成!");
+            delete dialog;
+        }
+    });
+    //////////////////////////////////////////
+    //全部清除按钮
+    connect(btn3,&QPushButton::clicked,[=](){
+        QString str_1="",str_2="",str_3="",text="已执行全部清除操作！执行情况：";
+        if(ArrayList->length()==0)
+            str_1="顺序表清除失败！顺序表已经是空的了！";
+        else{
+            ArrayList->clear();
+            str_1="顺序表清除成功！";
+        }
+        if(LinkStack->isEmpty())
+            str_2="链式栈清除失败！链式栈已经是空的了！";
+        else{
+            LinkStack->clear();
+            str_2="链式栈清除成功！";
+        }
+        if(graph->isEmpty())
+            str_3="图清除失败！图已经是空的了！";
+        else{
+            graph->clear();
+            str_3="图清除成功！";
+        }
+        text.append(str_1);
+        text.append(str_2);
+        text.append(str_3);
+        info->setText(text);
+    });
+
     //清除按钮
     connect(btn2,&QPushButton::clicked,[=](){
         if(rab1->isChecked()){
@@ -715,7 +861,7 @@ back2:
                 }
                 else{
                     graph=new Graph(size);
-                    int code=load_Graph(this,graph,size);
+                    int code=load_Graph(this,scene,graph,size);
                     if(code==1){
                         graph->update_graph(scene);
                         info->setText("载入成功！");
@@ -773,14 +919,14 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev){
     if((ev->buttons()&Qt::LeftButton)&&hit_tag==1&&graph->getLen()!=0){
         if(hit_pos>=0){
             if(graph->tag[hit_pos]==1){
-                if(ev->pos().x()<=20||ev->pos().y()<=20||ev->pos().x()>=1180||ev->pos().y()>=680){
+                if(ev->pos().x()<=20||ev->pos().y()<=44||ev->pos().x()>=765||ev->pos().y()>=680){
                     qreal x=ev->pos().x(),y=ev->pos().y();
                     if(ev->pos().x()<=20)
                         x=20;
-                    else if(ev->pos().x()>=1180)
-                        x=1180;
-                    if(ev->pos().y()<=20)
-                        y=20;
+                    else if(ev->pos().x()>=765)
+                        x=765;
+                    if(ev->pos().y()<=44)
+                        y=44;
                     else if(ev->pos().y()>=680)
                         y=680;
                     graph->get_unit()[hit_pos].setRect(x-625,y-395,40,40);
@@ -802,7 +948,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev){
                                                               graph->get_unit()[i].boundingRect().y()+20,
                                                               graph->get_unit()[hit_pos].boundingRect().x()+20,
                                                               graph->get_unit()[hit_pos].boundingRect().y()+20);
-                        graph->get_w()[i][hit_pos].setPos((graph->get_unit()[i].boundingRect().x()+20+graph->get_unit()[hit_pos].boundingRect().x()+20)/2+10,
+                        graph->get_w()[i][hit_pos].setPos((graph->get_unit()[i].boundingRect().x()+20+graph->get_unit()[hit_pos].boundingRect().x()+20)/2,
                                                           (graph->get_unit()[i].boundingRect().y()+20+graph->get_unit()[hit_pos].boundingRect().y()+20)/2);
                     }
                 }

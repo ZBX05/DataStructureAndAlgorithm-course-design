@@ -1,6 +1,7 @@
 #include "graph.h"
 
 Graph::Graph(int numVertex):Graphm(numVertex){
+    divide=new QGraphicsLineItem(180,-350,180,350,nullptr);
     matrix=(int**)new int* [numVertex];
     line=(QGraphicsLineItem**)new QGraphicsLineItem* [numVertex];
     vertex=new char[numVertex];
@@ -27,24 +28,19 @@ Graph::Graph(int numVertex):Graphm(numVertex){
     }
     for (int i = 0; i < numVertex; i++)
         for (int j = 0; j < numVertex; j++){
-            if(i==j)
-                matrix[i][j]=INFINITY;
-            else
-                matrix[i][j]=0;
-            matrix_unit[i][j].setRect(200+j*20,0+i*20,20,20);
+            matrix[i][j]=0;
+            matrix_unit[i][j].setRect(200+j*20,-100+i*20,20,20);
             w[i][j].setParentItem(&line[i][j]);
             w[i][j].setPos((unit[i].boundingRect().x()+20+unit[j].boundingRect().x()+20)/2,
                            (unit[i].boundingRect().y()+20+unit[j].boundingRect().y()+20)/2);
             matrix_text[i][j].setParentItem(&matrix_unit[i][j]);
-            if(i==j)
-                matrix_text[i][j].setPlainText("∞");
-            else
-                matrix_text[i][j].setPlainText(QString::number(matrix[i][j],10));
+            matrix_text[i][j].setPlainText(QString::number(matrix[i][j],10));
             matrix_text[i][j].setPos(matrix_unit[i][j].boundingRect().x(),matrix_unit[i][j].boundingRect().y());
         }
 }
 
 Graph::~Graph(){
+    delete divide;
     for(int i=0;i<numVertex;i++){
         delete [] matrix[i];
         delete [] w[i];
@@ -64,6 +60,7 @@ Graph::~Graph(){
 }
 
 void Graph::clear(){
+    delete divide;
     for(int i=0;i<numVertex;i++){
         delete [] matrix[i];
         delete [] w[i];
@@ -80,6 +77,7 @@ void Graph::clear(){
     delete [] vertex;
     delete [] text;
     delete [] unit;
+    divide=new QGraphicsLineItem(180,-350,180,350,nullptr);
     matrix=(int**)new int* [numVertex];
     line=(QGraphicsLineItem**)new QGraphicsLineItem* [numVertex];
     vertex=new char[numVertex];
@@ -190,6 +188,10 @@ void Graph::setEdge(int from, int to, int weight){
     matrix[to][from]=weight;
     matrix_text[from][to].setPlainText(QString::number(weight,10));
     matrix_text[to][from].setPlainText(QString::number(weight,10));
+    w[from][to].setPos((unit[from].boundingRect().x()+20+unit[to].boundingRect().x()+20)/2,
+                   (unit[from].boundingRect().y()+20+unit[to].boundingRect().y()+20)/2);
+    w[to][from].setPos((unit[to].boundingRect().x()+20+unit[from].boundingRect().x()+20)/2,
+                   (unit[to].boundingRect().y()+20+unit[from].boundingRect().y()+20)/2);
     w[from][to].setPlainText(QString::number(weight,10));
     w[to][from].setPlainText(QString::number(weight,10));
 }
@@ -266,8 +268,6 @@ int** Graph::get_matrix(){
 }
 
 bool Graph::addVertex(){
-    if(len>=numVertex)
-        return false;
     for(int i=0;i<len;i++){
         if(vertex[i]==0){
             if(i<26)
@@ -278,9 +278,16 @@ bool Graph::addVertex(){
             return true;
         }
     }
-    text[len].setPlainText(QString(vertex[len]));
-    len++;
-    return true;
+    if(len<numVertex){
+        if(len<26)
+            vertex[len]=65+len;
+        else
+            vertex[len]=char(len-25);
+        text[len].setPlainText(QString(vertex[len]));
+        len++;
+        return true;
+    }
+    return false;
 }
 
 void Graph::delVertex(int p,QGraphicsScene *scene){
@@ -309,6 +316,8 @@ void Graph::update_graph(QGraphicsScene *scene){
     QBrush brush;
     brush.setColor(Qt::white);
     brush.setStyle(Qt::SolidPattern);
+    divide->setPen(pen);
+    scene->addItem(divide);
     for(int i=0;i<this->len;i++){
         for(int j=0;j<i;j++){
             if(matrix[i][j]!=0){

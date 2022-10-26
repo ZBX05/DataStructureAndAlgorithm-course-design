@@ -9,10 +9,15 @@ linkStack::linkStack(int size){
     this->size=size;
     top=NULL;
     len=0;
+    mid=new QGraphicsLineItem(-605,-15,605,-15,nullptr);
 }
 
 linkStack::~linkStack(){
     clear();
+}
+
+Link* linkStack::getTopPointer(){
+    return top;
 }
 
 int linkStack::getSize(){
@@ -24,6 +29,8 @@ int linkStack::length(){
 }
 
 void linkStack::clear(){
+    delete mid;
+    mid=new QGraphicsLineItem(-605,-15,605,-15,nullptr);
     while(top!=NULL){
         Link* tmp=top;
         top=top->next;
@@ -121,7 +128,7 @@ bool linkStack::delete_(const int p){
     return true;
 }
 
-bool linkStack::brackets_matching(QGraphicsScene *scene,QString *string){
+bool linkStack::brackets_matching(QGraphicsScene *scene,QString *string,int step){
     QStringList str;
     str=string->split("");
     QTimer *timer=new QTimer(nullptr);
@@ -213,7 +220,7 @@ bool linkStack::brackets_matching(QGraphicsScene *scene,QString *string){
             this->pop(item);
             this->draw_linkStack(scene);
         }
-        timer->start(1000);
+        timer->start(step);
         loop->exec();
         pen.setColor(Qt::black);
         unit[i].setPen(pen);
@@ -232,7 +239,7 @@ bool linkStack::brackets_matching(QGraphicsScene *scene,QString *string){
     return true;
 }
 
-bool linkStack::expression_calculate(QGraphicsScene *scene,QString *string,int &value){
+bool linkStack::expression_calculate(QGraphicsScene *scene,QString *string,int &value,int step){
     QStringList str,tmp,expression;
     tmp=string->split("");
     int i=1;
@@ -348,7 +355,7 @@ bool linkStack::expression_calculate(QGraphicsScene *scene,QString *string,int &
             this->push(expression[i].toInt(nullptr,10));
         }
         this->draw_linkStack(scene);
-        timer->start(1000);
+        timer->start(step);
         loop->exec();
         pen.setColor(Qt::black);
         unit[i].setPen(pen);
@@ -369,6 +376,8 @@ void linkStack::draw_linkStack(QGraphicsScene *scene){
     pen.setWidth(2);
     pen_.setWidth(2);
     pen__.setWidth(4);
+    mid->setPen(pen__);
+    scene->addItem(mid);
     while(p!=NULL){
         p->unit1->setPen(pen);
         p->unit2->setPen(pen);

@@ -13,9 +13,11 @@ private:
     Link* top;
     int size;
     int len;
+    QGraphicsLineItem *mid;
 public:
     linkStack(int size);
     ~linkStack();
+    Link* getTopPointer();
     int getSize();
     int length();
     void clear();
@@ -26,8 +28,8 @@ public:
     bool setValue(const int p,const int value);
     bool insert(const int p,const int value);
     bool delete_(const int p);
-    bool brackets_matching(QGraphicsScene *scene,QString *string);
-    bool expression_calculate(QGraphicsScene *scene,QString *string,int &value);
+    bool brackets_matching(QGraphicsScene *scene,QString *string,int step);
+    bool expression_calculate(QGraphicsScene *scene,QString *string,int &value,int step);
     void draw_linkStack(QGraphicsScene *scene);
 };
 

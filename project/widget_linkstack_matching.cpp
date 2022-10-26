@@ -20,15 +20,15 @@ Widget_linkstack_matching::Widget_linkstack_matching(QWidget *parent) :
     view->setAlignment(Qt::AlignCenter);
 }
 
-int Widget_linkstack_matching::run(int code,int &value){
+int Widget_linkstack_matching::run(int code,int &value,int step){
     scene->clear();
     if(code==1)
-        return brackets_matching();
+        return brackets_matching(step);
     else if(code==2)
-        return expression_calculate(value);
+        return expression_calculate(value,step);
 }
 
-int Widget_linkstack_matching::brackets_matching(){
+int Widget_linkstack_matching::brackets_matching(int step){
     Dialog_input *dialog=new Dialog_input(this);
     int ret=dialog->exec();
     if(ret==QDialog::Accepted){
@@ -37,7 +37,7 @@ int Widget_linkstack_matching::brackets_matching(){
             return 2;
         else{
             linkStack *ls=new linkStack(text.length());
-            if(ls->brackets_matching(scene,&text))
+            if(ls->brackets_matching(scene,&text,step))
                 return 1;
             else
                 return 0;
@@ -49,7 +49,7 @@ int Widget_linkstack_matching::brackets_matching(){
     }
 }
 
-int Widget_linkstack_matching::expression_calculate(int &value){
+int Widget_linkstack_matching::expression_calculate(int &value,int step){
     Dialog_input *dialog=new Dialog_input(this);
     int ret=dialog->exec();
     if(ret==QDialog::Accepted){
@@ -58,7 +58,7 @@ int Widget_linkstack_matching::expression_calculate(int &value){
             return 2;
         else{
             linkStack *ls=new linkStack(text.length());
-            if(ls->expression_calculate(scene,&text,value))
+            if(ls->expression_calculate(scene,&text,value,step))
                 return 1;
             else
                 return 0;

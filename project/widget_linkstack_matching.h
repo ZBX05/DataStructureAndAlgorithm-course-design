@@ -19,9 +19,9 @@ public:
 //    linkStack *LinkStack=new linkStack(0);
     explicit Widget_linkstack_matching(QWidget *parent = nullptr);
     ~Widget_linkstack_matching();
-    int brackets_matching();
-    int expression_calculate(int &value);
-    int run(int code,int &value);
+    int brackets_matching(int step);
+    int expression_calculate(int &value,int step);
+    int run(int code,int &value,int step);
 private:
     Ui::Widget_linkstack_matching *ui;
 };

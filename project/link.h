@@ -22,7 +22,7 @@ private:
     QGraphicsTextItem *text1,*text2;
     QGraphicsEllipseItem *point;
     QGraphicsLineItem *line;
-    QGraphicsPolygonItem *triangle;
+//    QGraphicsPolygonItem *triangle;
 public:
     explicit Link(QObject *parent);
     Link(const int info,const int pos,Link *next=NULL);

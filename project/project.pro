@@ -19,6 +19,7 @@ SOURCES += \
     dialog_graph_editedge.cpp \
     dialog_input.cpp \
     dialog_linkstack_push.cpp \
+    dialog_set_step.cpp \
     edge.cpp \
     graph.cpp \
     graphm.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
     dialog_graph_editedge.h \
     dialog_input.h \
     dialog_linkstack_push.h \
+    dialog_set_step.h \
     dist.h \
     edge.h \
     graph.h \
@@ -62,6 +64,7 @@ FORMS += \
     dialog_graph_editedge.ui \
     dialog_input.ui \
     dialog_linkstack_push.ui \
+    dialog_set_step.ui \
     mainwindow.ui \
     widget_linkstack_matching.ui
 

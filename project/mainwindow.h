@@ -26,6 +26,7 @@ public:
     Graph *graph=new Graph(0);
     int hit_tag=0;
     int hit_pos=-1;
+    int step=500;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void mousePressEvent(QMouseEvent *ev);

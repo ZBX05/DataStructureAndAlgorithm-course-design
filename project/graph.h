@@ -18,7 +18,7 @@ private:
     QGraphicsEllipseItem *unit;
     QGraphicsRectItem **matrix_unit;
     QGraphicsTextItem *text,**w,**matrix_text;
-    QGraphicsLineItem **line;
+    QGraphicsLineItem **line,*divide;
 public:
     int *tag;
     Graph(int numVertex);
