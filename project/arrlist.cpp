@@ -27,7 +27,7 @@ arrList::arrList(const int size)
     text=new QGraphicsTextItem[size];
     for(int i=0;i<size;i++){
         //unit[i].setFlags(QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsMovable);
-        unit[i].setRect(-200+i*25,-200,25,25);
+        unit[i].setRect(-500+i*25,-250+(i/900)*50,25,25);
         text[i].setParentItem(&unit[i]);
         text[i].setPos(unit[i].boundingRect().x(),unit[i].boundingRect().y());
     }

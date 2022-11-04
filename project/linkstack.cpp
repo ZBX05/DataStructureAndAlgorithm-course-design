@@ -43,7 +43,7 @@ bool linkStack::push(const int value){
     if(len>=size) return false;
     Link* p=new Link(value,len,NULL);
     if(top!=NULL){
-        p->line=new QGraphicsLineItem(top->unit3->boundingRect().x()+40,top->unit3->boundingRect().y()+10,
+        p->line=new QGraphicsLineItem(top->unit3->boundingRect().x()+((pow(-1,len/12)>=0||(len%12==0))?len%24==0?0:40:0),top->unit3->boundingRect().y()+10,
                                       p->unit3->boundingRect().x()+20,p->unit3->boundingRect().y()+10,p->unit3);
 //        p->triangle=new QGraphicsPolygonItem(p->line);
 //        QPolygon *polygon=new QPolygon();
@@ -220,7 +220,7 @@ bool linkStack::brackets_matching(QGraphicsScene *scene,QString *string,int step
             this->pop(item);
             this->draw_linkStack(scene);
         }
-        timer->start(step);
+        timer->start(2500);
         loop->exec();
         pen.setColor(Qt::black);
         unit[i].setPen(pen);
@@ -360,7 +360,7 @@ bool linkStack::expression_calculate(QGraphicsScene *scene,QString *string,int &
         pen.setColor(Qt::black);
         unit[i].setPen(pen);
     }
-    timer->start(2000);
+    timer->start(2500);
     loop->exec();
     this->getTop(value);
     delete timer;

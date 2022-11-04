@@ -24,6 +24,8 @@ Graph::Graph(int numVertex):Graphm(numVertex){
         unit[i].setRect(-500+120*(i%5),-300+150*(i/5)+(i%5==1?(i%5)*(-30):i%5==3?(i%5)*30:0),40,40);
         text[i].setParentItem(&unit[i]);
         text[i].setPos(unit[i].boundingRect().x()+10,unit[i].boundingRect().y()+10);
+        unit[i].setZValue(10);
+        text[i].setZValue(20);
         tag[i]=0;
     }
     for (int i = 0; i < numVertex; i++)

@@ -106,6 +106,7 @@ MainWindow::MainWindow(QWidget *parent):
     QAction *dfs=graph_meu->addAction("🎇深度优先周游");
     QAction *bfs=graph_meu->addAction("🎇广度优先周游");
     QAction *prim=graph_meu->addAction("🎇Prim算法求最小生成树");
+    QAction *dijkstra=graph_meu->addAction("🎇迪杰斯特拉算法求最单源最短路径");
     QMenu *meu2=new QMenu("保存");
     meb->addMenu(meu2);
     QAction *save_this=new QAction("保存当前数据结构");
@@ -637,6 +638,49 @@ back2:
                         }
                     }
                     info->setText(text);
+                }
+                delete dialog;
+            }
+            else
+                info->setText("请先加载图！");
+        }
+        else
+            info->setText("选择的数据类型不正确！");
+    });
+
+    //Dijkstra算法
+    connect(dijkstra,&QAction::triggered,[=](){
+        if(rab3->isChecked()){
+            if(graph->getNumVertex()!=0){
+                Dialog_arrlist_delete *dialog=new Dialog_arrlist_delete(this);
+                dialog->setBox(graph->get_vertex(),graph->getLen());
+                dialog->setInfo(QString("起始位置:"));
+                int ret=dialog->exec();
+                if(ret==QDialog::Accepted){
+                    graph->update_graph(scene);
+                    QString string=dialog->getVertexPos();
+                    Dist *D;
+                    int start=0;
+                    for(int i=0;i<graph->getLen();i++){
+                        if(string[0]==(QChar)graph->get_vertex()[i]){
+                            start=i;
+                        }
+                    }
+//                    QGraphicsLineItem **line=graph->get_line();
+//                    QGraphicsEllipseItem *unit=graph->get_unit();
+//                    QString text="Prim算法完成！";
+//                    QTimer* timer=new QTimer(nullptr);
+//                    timer->setSingleShot(true);
+//                    QEventLoop* loop=new QEventLoop(nullptr);
+//                    Graph::connect(timer,&QTimer::timeout,loop,&QEventLoop::quit);
+//                    QPen *pen=new QPen();
+//                    pen->setWidth(4);
+//                    pen->setColor(Qt::green);
+//                    QStringList str;
+//                    Edge *MST=new Edge[graph->getNumVertex()];
+
+                    Dijkstra(scene,info,step,*graph,start,D);
+                    delete D;
                 }
                 delete dialog;
             }
